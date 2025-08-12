@@ -1,4 +1,4 @@
-const { News, User } = require('../models');
+const { News, User, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const path = require('path');
 const fs = require('fs');
