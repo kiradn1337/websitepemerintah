@@ -3,14 +3,14 @@ const router = express.Router();
 const personalDataController = require('../controllers/personalDataController');
 const { requireAuth, requireAdmin, requireSuperAdmin } = require('../middleware/authMiddleware');
 const { check } = require('express-validator');
-const upload = require('../middleware/uploadMiddleware');
+const { uploadFile } = require('../middleware/uploadMiddleware');
 
 // Personal Data Routes for Superadmin
 router.get('/', requireSuperAdmin, personalDataController.getUserPersonalData);
 router.get('/create', requireSuperAdmin, personalDataController.showCreatePersonalDataForm);
 router.post('/create', 
   requireSuperAdmin, 
-  upload.single('fileData'),
+  uploadFile.single('fileData'),
   [
     check('title').notEmpty().withMessage('Judul data harus diisi'),
     check('category').notEmpty().withMessage('Kategori harus dipilih'),
@@ -33,7 +33,7 @@ router.get('/:id', requireSuperAdmin, personalDataController.viewPersonalData);
 router.get('/:id/edit', requireSuperAdmin, personalDataController.showEditPersonalDataForm);
 router.post('/:id/edit', 
   requireSuperAdmin, 
-  upload.single('fileData'),
+  uploadFile.single('fileData'),
   [
     check('title').notEmpty().withMessage('Judul data harus diisi'),
     check('category').notEmpty().withMessage('Kategori harus dipilih'),
