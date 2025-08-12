@@ -6,8 +6,8 @@ const { check } = require('express-validator');
 const upload = require('../middleware/uploadMiddleware');
 
 // Personal Data Routes for Superadmin
-router.get('/', requireSuperAdmin, personalDataController.index);
-router.get('/create', requireSuperAdmin, personalDataController.create);
+router.get('/', requireSuperAdmin, personalDataController.getUserPersonalData);
+router.get('/create', requireSuperAdmin, personalDataController.showCreatePersonalDataForm);
 router.post('/create', 
   requireSuperAdmin, 
   upload.single('fileData'),
@@ -26,11 +26,11 @@ router.post('/create',
         return true;
       })
   ],
-  personalDataController.store
+  personalDataController.createPersonalData
 );
 
-router.get('/:id', requireSuperAdmin, personalDataController.show);
-router.get('/:id/edit', requireSuperAdmin, personalDataController.edit);
+router.get('/:id', requireSuperAdmin, personalDataController.viewPersonalData);
+router.get('/:id/edit', requireSuperAdmin, personalDataController.showEditPersonalDataForm);
 router.post('/:id/edit', 
   requireSuperAdmin, 
   upload.single('fileData'),
@@ -39,16 +39,30 @@ router.post('/:id/edit',
     check('category').notEmpty().withMessage('Kategori harus dipilih'),
     check('userId').notEmpty().withMessage('Pengguna harus dipilih')
   ],
-  personalDataController.update
+  personalDataController.updatePersonalData
 );
 
-router.post('/:id/decrypt', requireSuperAdmin, personalDataController.decrypt);
-router.get('/:id/download', requireSuperAdmin, personalDataController.download);
-router.post('/:id/delete', requireSuperAdmin, personalDataController.destroy);
-router.get('/:id/logs', requireSuperAdmin, personalDataController.logs);
+// Tidak ada fungsi decrypt dalam controller
+router.post('/:id/decrypt', requireSuperAdmin, (req, res) => {
+  res.status(501).send('Decrypt functionality not implemented');
+});
 
-// Version related routes
-router.get('/version/:versionId', requireSuperAdmin, personalDataController.showVersion);
+// Tidak ada fungsi download dalam controller
+router.get('/:id/download', requireSuperAdmin, (req, res) => {
+  res.status(501).send('Download functionality not implemented');
+});
+
+router.post('/:id/delete', requireSuperAdmin, personalDataController.deletePersonalData);
+
+// Tidak ada fungsi logs dalam controller
+router.get('/:id/logs', requireSuperAdmin, (req, res) => {
+  res.status(501).send('Logs functionality not implemented');
+});
+
+// Version related routes - fungsi tidak ada
+router.get('/version/:versionId', requireSuperAdmin, (req, res) => {
+  res.status(501).send('Version view functionality not implemented');
+});
 router.post('/version/:versionId/decrypt', requireSuperAdmin, async (req, res) => {
   const { versionId } = req.params;
   const { decryptionKey } = req.body;
