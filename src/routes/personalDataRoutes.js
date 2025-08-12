@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const personalDataController = require('../controllers/personalDataController');
-const { isAuthenticated, isAdmin, isSuperAdmin } = require('../middleware/authMiddleware');
+const { requireAuth, requireAdmin, requireSuperAdmin } = require('../middleware/authMiddleware');
 const { check } = require('express-validator');
 const upload = require('../middleware/uploadMiddleware');
 
 // Personal Data Routes for Superadmin
-router.get('/', isSuperAdmin, personalDataController.index);
-router.get('/create', isSuperAdmin, personalDataController.create);
+router.get('/', requireSuperAdmin, personalDataController.index);
+router.get('/create', requireSuperAdmin, personalDataController.create);
 router.post('/create', 
-  isSuperAdmin, 
+  requireSuperAdmin, 
   upload.single('fileData'),
   [
     check('title').notEmpty().withMessage('Judul data harus diisi'),
@@ -29,10 +29,10 @@ router.post('/create',
   personalDataController.store
 );
 
-router.get('/:id', isSuperAdmin, personalDataController.show);
-router.get('/:id/edit', isSuperAdmin, personalDataController.edit);
+router.get('/:id', requireSuperAdmin, personalDataController.show);
+router.get('/:id/edit', requireSuperAdmin, personalDataController.edit);
 router.post('/:id/edit', 
-  isSuperAdmin, 
+  requireSuperAdmin, 
   upload.single('fileData'),
   [
     check('title').notEmpty().withMessage('Judul data harus diisi'),
@@ -42,14 +42,14 @@ router.post('/:id/edit',
   personalDataController.update
 );
 
-router.post('/:id/decrypt', isSuperAdmin, personalDataController.decrypt);
-router.get('/:id/download', isSuperAdmin, personalDataController.download);
-router.post('/:id/delete', isSuperAdmin, personalDataController.destroy);
-router.get('/:id/logs', isSuperAdmin, personalDataController.logs);
+router.post('/:id/decrypt', requireSuperAdmin, personalDataController.decrypt);
+router.get('/:id/download', requireSuperAdmin, personalDataController.download);
+router.post('/:id/delete', requireSuperAdmin, personalDataController.destroy);
+router.get('/:id/logs', requireSuperAdmin, personalDataController.logs);
 
 // Version related routes
-router.get('/version/:versionId', isSuperAdmin, personalDataController.showVersion);
-router.post('/version/:versionId/decrypt', isSuperAdmin, async (req, res) => {
+router.get('/version/:versionId', requireSuperAdmin, personalDataController.showVersion);
+router.post('/version/:versionId/decrypt', requireSuperAdmin, async (req, res) => {
   const { versionId } = req.params;
   const { decryptionKey } = req.body;
   
@@ -61,7 +61,7 @@ router.post('/version/:versionId/decrypt', isSuperAdmin, async (req, res) => {
   res.redirect(`/superadmin/personal-data/version/${versionId}?key=${encodeURIComponent(decryptionKey)}`);
 });
 
-router.post('/version/:versionId/restore', isSuperAdmin, async (req, res) => {
+router.post('/version/:versionId/restore', requireSuperAdmin, async (req, res) => {
   try {
     const { versionId } = req.params;
     
