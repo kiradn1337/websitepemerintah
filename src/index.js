@@ -14,6 +14,7 @@ const adminRoutes = require('./routes/admin');
 const superadminRoutes = require('./routes/superadmin');
 const fileRoutes = require('./routes/file');
 const newsRoutes = require('./routes/news');
+const sitemapRoutes = require('./routes/sitemapRoutes');
 
 // Import middleware
 const { checkUser } = require('./middleware/authMiddleware');
@@ -64,6 +65,7 @@ app.use('/admin', adminRoutes);
 app.use('/superadmin', superadminRoutes);
 app.use('/file', fileRoutes);
 app.use('/news', newsRoutes);
+app.use('/', sitemapRoutes);
 
 // Error handling
 app.use((req, res) => {
