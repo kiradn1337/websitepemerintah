@@ -1,0 +1,163 @@
+<%- include('../partials/header') %>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="card shadow">
+        <div class="card-header bg-danger text-white">
+          <h3 class="mb-0"><i class="fas fa-sitemap me-2"></i> Sitemap Super Admin</h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <!-- Dashboard Super Admin -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-tachometer-alt me-2"></i> Dashboard Super Admin</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin" class="text-decoration-none text-dark">Dashboard Utama</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/profile" class="text-decoration-none text-dark">Profil Saya</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/change-password" class="text-decoration-none text-dark">Ubah Password</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Manajemen Admin -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-user-shield me-2"></i> Manajemen Admin</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/admins" class="text-decoration-none text-dark">Daftar Admin</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/admins/create" class="text-decoration-none text-dark">Tambah Admin</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/admins/permissions" class="text-decoration-none text-dark">Izin Admin</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Manajemen Pengguna -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-users me-2"></i> Manajemen Pengguna</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/users" class="text-decoration-none text-dark">Semua Pengguna</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/users/roles" class="text-decoration-none text-dark">Manajemen Role</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/users/permissions" class="text-decoration-none text-dark">Izin Pengguna</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Data Pribadi -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-file-alt me-2"></i> Data Pribadi</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/personal-data" class="text-decoration-none text-dark">Semua Data Pribadi</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/personal-data/create" class="text-decoration-none text-dark">Tambah Data Pribadi</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/personal-data/requests" class="text-decoration-none text-dark">Permintaan Data</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/personal-data/categories" class="text-decoration-none text-dark">Kategori Data</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Manajemen Berita -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-newspaper me-2"></i> Manajemen Berita</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/news" class="text-decoration-none text-dark">Semua Berita</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/news/create" class="text-decoration-none text-dark">Tambah Berita</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/news/categories" class="text-decoration-none text-dark">Kategori Berita</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/news/approvals" class="text-decoration-none text-dark">Persetujuan Berita</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Keamanan Sistem -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-shield-alt me-2"></i> Keamanan Sistem</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/security/logs" class="text-decoration-none text-dark">Log Keamanan</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/security/access" class="text-decoration-none text-dark">Akses Sistem</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/security/firewall" class="text-decoration-none text-dark">Pengaturan Firewall</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/security/encryption" class="text-decoration-none text-dark">Manajemen Enkripsi</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Database & Backup -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-database me-2"></i> Database & Backup</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/database" class="text-decoration-none text-dark">Status Database</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/database/backup" class="text-decoration-none text-dark">Manajemen Backup</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/database/restore" class="text-decoration-none text-dark">Restore Data</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Pengaturan Sistem -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-cogs me-2"></i> Pengaturan Sistem</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/settings/system" class="text-decoration-none text-dark">Konfigurasi Sistem</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/settings/email" class="text-decoration-none text-dark">Pengaturan Email</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/settings/api" class="text-decoration-none text-dark">Pengaturan API</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/settings/storage" class="text-decoration-none text-dark">Manajemen Storage</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Laporan & Audit -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-clipboard-list me-2"></i> Laporan & Audit</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/reports/system" class="text-decoration-none text-dark">Laporan Sistem</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/reports/users" class="text-decoration-none text-dark">Laporan Pengguna</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/reports/data" class="text-decoration-none text-dark">Laporan Data</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/reports/audit" class="text-decoration-none text-dark">Log Audit</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- API & Integrasi -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-plug me-2"></i> API & Integrasi</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/api/keys" class="text-decoration-none text-dark">Manajemen API Key</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/api/logs" class="text-decoration-none text-dark">Log API</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/superadmin/api/docs" class="text-decoration-none text-dark">Dokumentasi API</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

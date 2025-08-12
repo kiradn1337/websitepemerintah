@@ -1,0 +1,130 @@
+<%- include('../partials/header') %>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="card shadow">
+        <div class="card-header bg-danger text-white">
+          <h3 class="mb-0"><i class="fas fa-sitemap me-2"></i> Sitemap Admin</h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <!-- Dashboard Admin -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-tachometer-alt me-2"></i> Dashboard Admin</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin" class="text-decoration-none text-dark">Dashboard Utama</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/profile" class="text-decoration-none text-dark">Profil Saya</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/change-password" class="text-decoration-none text-dark">Ubah Password</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Manajemen Pengguna -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-users me-2"></i> Manajemen Pengguna</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/users" class="text-decoration-none text-dark">Daftar Pengguna</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/users/create" class="text-decoration-none text-dark">Tambah Pengguna</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/users/requests" class="text-decoration-none text-dark">Permintaan Pengguna</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Manajemen Berita -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-newspaper me-2"></i> Manajemen Berita</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/news" class="text-decoration-none text-dark">Semua Berita</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/news/create" class="text-decoration-none text-dark">Tambah Berita</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/news/categories" class="text-decoration-none text-dark">Kategori Berita</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/news/drafts" class="text-decoration-none text-dark">Draft Berita</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- File & Dokumen -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-folder me-2"></i> File & Dokumen</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/files" class="text-decoration-none text-dark">Manajemen File</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/files/uploads" class="text-decoration-none text-dark">Upload File</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/files/categories" class="text-decoration-none text-dark">Kategori File</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pesan & Notifikasi -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-bell me-2"></i> Pesan & Notifikasi</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/messages" class="text-decoration-none text-dark">Pesan Masuk</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/notifications" class="text-decoration-none text-dark">Manajemen Notifikasi</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/broadcasts" class="text-decoration-none text-dark">Kirim Pesan Broadcast</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Laporan & Statistik -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-chart-bar me-2"></i> Laporan & Statistik</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/reports/users" class="text-decoration-none text-dark">Aktivitas Pengguna</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/reports/files" class="text-decoration-none text-dark">Laporan File</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/reports/news" class="text-decoration-none text-dark">Statistik Berita</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Pengaturan -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-cog me-2"></i> Pengaturan</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/settings/general" class="text-decoration-none text-dark">Pengaturan Umum</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/settings/email" class="text-decoration-none text-dark">Konfigurasi Email</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Log Aktivitas -->
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 border-0">
+                <div class="card-body bg-light rounded">
+                  <h4 class="card-title" style="color: #CE1126;"><i class="fas fa-history me-2"></i> Log Aktivitas</h4>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/logs" class="text-decoration-none text-dark">Log Sistem</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/logs/admin" class="text-decoration-none text-dark">Log Admin</a></li>
+                    <li class="list-group-item bg-transparent border-0"><i class="fas fa-chevron-right text-danger me-2"></i> <a href="/admin/logs/users" class="text-decoration-none text-dark">Log Pengguna</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
