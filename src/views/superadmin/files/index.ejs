@@ -1,0 +1,461 @@
+<!-- File Management -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="fas fa-file-alt me-2"></i> Manajemen File</h2>
+  <a href="/superadmin/files/upload" class="btn btn-danger">
+    <i class="fas fa-upload me-1"></i> Upload File Baru
+  </a>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header bg-white">
+    <div class="row">
+      <div class="col-md-4 mb-2 mb-md-0">
+        <form action="/superadmin/files" method="get" class="d-flex">
+          <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Cari file..." value="<%= search || '' %>">
+            <button type="submit" class="btn btn-outline-danger">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-8">
+        <div class="d-flex flex-wrap justify-content-md-end gap-2">
+          <select name="category" class="form-select" style="max-width: 150px;" onchange="window.location.href=`/superadmin/files?category=${this.value}&type=<%= type || '' %>&access=<%= access || '' %>&search=<%= search || '' %>`">
+            <option value="">Semua Kategori</option>
+            <% categories.forEach(cat => { %>
+              <option value="<%= cat %>" <%= category === cat ? 'selected' : '' %>><%= cat %></option>
+            <% }) %>
+          </select>
+          
+          <select name="type" class="form-select" style="max-width: 150px;" onchange="window.location.href=`/superadmin/files?type=${this.value}&category=<%= category || '' %>&access=<%= access || '' %>&search=<%= search || '' %>`">
+            <option value="">Semua Tipe</option>
+            <option value="image" <%= type === 'image' ? 'selected' : '' %>>Image</option>
+            <option value="document" <%= type === 'document' ? 'selected' : '' %>>Document</option>
+            <option value="pdf" <%= type === 'pdf' ? 'selected' : '' %>>PDF</option>
+            <option value="archive" <%= type === 'archive' ? 'selected' : '' %>>Archive</option>
+            <option value="other" <%= type === 'other' ? 'selected' : '' %>>Other</option>
+          </select>
+          
+          <select name="access" class="form-select" style="max-width: 170px;" onchange="window.location.href=`/superadmin/files?access=${this.value}&category=<%= category || '' %>&type=<%= type || '' %>&search=<%= search || '' %>`">
+            <option value="">Semua Level Akses</option>
+            <option value="public" <%= access === 'public' ? 'selected' : '' %>>Public</option>
+            <option value="user" <%= access === 'user' ? 'selected' : '' %>>User</option>
+            <option value="admin" <%= access === 'admin' ? 'selected' : '' %>>Admin</option>
+            <option value="superadmin" <%= access === 'superadmin' ? 'selected' : '' %>>Super Admin</option>
+          </select>
+          
+          <select name="sortBy" class="form-select" style="max-width: 170px;" onchange="window.location.href=`/superadmin/files?sortBy=${this.value}&category=<%= category || '' %>&type=<%= type || '' %>&access=<%= access || '' %>&search=<%= search || '' %>`">
+            <option value="newest" <%= sortBy === 'newest' ? 'selected' : '' %>>Terbaru</option>
+            <option value="oldest" <%= sortBy === 'oldest' ? 'selected' : '' %>>Terlama</option>
+            <option value="name_asc" <%= sortBy === 'name_asc' ? 'selected' : '' %>>Nama (A-Z)</option>
+            <option value="name_desc" <%= sortBy === 'name_desc' ? 'selected' : '' %>>Nama (Z-A)</option>
+            <option value="size_asc" <%= sortBy === 'size_asc' ? 'selected' : '' %>>Ukuran (Terkecil)</option>
+            <option value="size_desc" <%= sortBy === 'size_desc' ? 'selected' : '' %>>Ukuran (Terbesar)</option>
+          </select>
+
+          <div class="btn-group">
+            <button class="btn btn-outline-secondary <%= viewMode === 'grid' ? 'active' : '' %>" onclick="window.location.href=`/superadmin/files?viewMode=grid&category=<%= category || '' %>&type=<%= type || '' %>&access=<%= access || '' %>&search=<%= search || '' %>`">
+              <i class="fas fa-th"></i>
+            </button>
+            <button class="btn btn-outline-secondary <%= viewMode === 'list' ? 'active' : '' %>" onclick="window.location.href=`/superadmin/files?viewMode=list&category=<%= category || '' %>&type=<%= type || '' %>&access=<%= access || '' %>&search=<%= search || '' %>`">
+              <i class="fas fa-list"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card-body">
+    <% if (files && files.length > 0) { %>
+      <% if (viewMode === 'grid') { %>
+        <!-- Grid View -->
+        <div class="row">
+          <% files.forEach(file => { %>
+            <div class="col-xl-3 col-md-4 col-sm-6 mb-4">
+              <div class="card h-100 file-card">
+                <div class="card-body">
+                  <div class="file-icon mb-3 text-center">
+                    <% if (file.fileType.includes('image')) { %>
+                      <img src="/files/<%= file.id %>/thumbnail" class="img-thumbnail file-thumbnail" alt="<%= file.originalName %>">
+                    <% } else { %>
+                      <i class="fas fa-<%= file.fileType.includes('pdf') ? 'file-pdf' : (file.fileType.includes('word') ? 'file-word' : (file.fileType.includes('excel') ? 'file-excel' : (file.fileType.includes('zip') || file.fileType.includes('rar') ? 'file-archive' : 'file-alt'))) %> fa-4x"></i>
+                    <% } %>
+                  </div>
+                  
+                  <h6 class="file-name text-truncate" title="<%= file.originalName %>">
+                    <%= file.originalName %>
+                  </h6>
+                  
+                  <div class="file-details small text-muted">
+                    <div><i class="fas fa-tag me-1"></i> <%= file.category || 'Tanpa Kategori' %></div>
+                    <div><i class="fas fa-weight me-1"></i> <%= (file.fileSize / 1024).toFixed(2) %> KB</div>
+                    <div>
+                      <i class="fas fa-clock me-1"></i> 
+                      <%= new Date(file.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) %>
+                    </div>
+                  </div>
+                  
+                  <div class="mt-2">
+                    <span class="badge bg-<%= file.accessLevel === 'public' ? 'info' : (file.accessLevel === 'user' ? 'success' : (file.accessLevel === 'admin' ? 'warning' : 'danger')) %>">
+                      <%= file.accessLevel %>
+                    </span>
+                    
+                    <span class="badge bg-primary ms-1">
+                      <%= file.uploadedBy ? file.uploadedBy.fullName : 'System' %>
+                    </span>
+                  </div>
+                </div>
+                <div class="card-footer bg-white">
+                  <div class="btn-group btn-group-sm w-100">
+                    <a href="/files/<%= file.id %>/preview" class="btn btn-outline-secondary" target="_blank">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="/files/<%= file.id %>/download" class="btn btn-outline-success">
+                      <i class="fas fa-download"></i>
+                    </a>
+                    <a href="/superadmin/files/<%= file.id %>/edit" class="btn btn-outline-primary">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <button type="button" class="btn btn-outline-danger" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteModal" 
+                            data-id="<%= file.id %>" 
+                            data-name="<%= file.originalName %>">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <!-- List View -->
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 40%;">Nama File</th>
+                <th>Kategori</th>
+                <th>Ukuran</th>
+                <th>Level Akses</th>
+                <th>Tanggal Upload</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% files.forEach(file => { %>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="file-icon me-2">
+                        <% if (file.fileType.includes('image')) { %>
+                          <img src="/files/<%= file.id %>/thumbnail" class="img-thumbnail file-icon-sm" alt="<%= file.originalName %>">
+                        <% } else { %>
+                          <i class="fas fa-<%= file.fileType.includes('pdf') ? 'file-pdf' : (file.fileType.includes('word') ? 'file-word' : (file.fileType.includes('excel') ? 'file-excel' : (file.fileType.includes('zip') || file.fileType.includes('rar') ? 'file-archive' : 'file-alt'))) %> fa-2x text-<%= file.fileType.includes('pdf') ? 'danger' : (file.fileType.includes('word') ? 'primary' : (file.fileType.includes('excel') ? 'success' : (file.fileType.includes('zip') || file.fileType.includes('rar') ? 'warning' : 'secondary'))) %>"></i>
+                        <% } %>
+                      </div>
+                      <div>
+                        <div class="file-name text-truncate" title="<%= file.originalName %>">
+                          <%= file.originalName %>
+                        </div>
+                        <small class="text-muted"><%= file.fileType %></small>
+                      </div>
+                    </div>
+                  </td>
+                  <td><%= file.category || 'Tanpa Kategori' %></td>
+                  <td><%= (file.fileSize / 1024).toFixed(2) %> KB</td>
+                  <td>
+                    <span class="badge bg-<%= file.accessLevel === 'public' ? 'info' : (file.accessLevel === 'user' ? 'success' : (file.accessLevel === 'admin' ? 'warning' : 'danger')) %>">
+                      <%= file.accessLevel %>
+                    </span>
+                  </td>
+                  <td>
+                    <%= new Date(file.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) %>
+                    <div class="small text-muted">
+                      oleh <%= file.uploadedBy ? file.uploadedBy.fullName : 'System' %>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <a href="/files/<%= file.id %>/preview" class="btn btn-outline-secondary" target="_blank">
+                        <i class="fas fa-eye"></i>
+                      </a>
+                      <a href="/files/<%= file.id %>/download" class="btn btn-outline-success">
+                        <i class="fas fa-download"></i>
+                      </a>
+                      <a href="/superadmin/files/<%= file.id %>/edit" class="btn btn-outline-primary">
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <button type="button" class="btn btn-outline-danger" 
+                              data-bs-toggle="modal" 
+                              data-bs-target="#deleteModal" 
+                              data-id="<%= file.id %>" 
+                              data-name="<%= file.originalName %>">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+      
+      <!-- Pagination -->
+      <div class="d-flex justify-content-between align-items-center mt-4">
+        <div>
+          Menampilkan <%= (page - 1) * limit + 1 %> sampai <%= Math.min(page * limit, totalItems) %> dari <%= totalItems %> file
+        </div>
+        <nav>
+          <ul class="pagination mb-0">
+            <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+              <a class="page-link" href="/superadmin/files?page=<%= page - 1 %>&limit=<%= limit %>&category=<%= category || '' %>&type=<%= type || '' %>&access=<%= access || '' %>&search=<%= search || '' %>&viewMode=<%= viewMode %>">
+                <i class="fas fa-angle-left"></i>
+              </a>
+            </li>
+            
+            <% for (let i = Math.max(1, page - 2); i <= Math.min(totalPages, page + 2); i++) { %>
+              <li class="page-item <%= page == i ? 'active' : '' %>">
+                <a class="page-link" href="/superadmin/files?page=<%= i %>&limit=<%= limit %>&category=<%= category || '' %>&type=<%= type || '' %>&access=<%= access || '' %>&search=<%= search || '' %>&viewMode=<%= viewMode %>">
+                  <%= i %>
+                </a>
+              </li>
+            <% } %>
+            
+            <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
+              <a class="page-link" href="/superadmin/files?page=<%= page + 1 %>&limit=<%= limit %>&category=<%= category || '' %>&type=<%= type || '' %>&access=<%= access || '' %>&search=<%= search || '' %>&viewMode=<%= viewMode %>">
+                <i class="fas fa-angle-right"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    <% } else { %>
+      <div class="text-center py-5">
+        <i class="fas fa-file-alt fa-4x text-muted mb-3"></i>
+        <h5>Tidak Ada File Ditemukan</h5>
+        <p class="text-muted">Tidak ada file yang sesuai dengan kriteria pencarian Anda.</p>
+        <a href="/superadmin/files/upload" class="btn btn-danger mt-2">
+          <i class="fas fa-upload me-1"></i> Upload File Baru
+        </a>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- File Stats Card -->
+<div class="row">
+  <!-- File Count by Category -->
+  <div class="col-md-6 mb-4">
+    <div class="card">
+      <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i> File Berdasarkan Kategori</h5>
+      </div>
+      <div class="card-body">
+        <% if (categoryStats && categoryStats.length > 0) { %>
+          <div class="chart-container" style="height: 300px;">
+            <input type="hidden" id="categoryChartData" value='<%= JSON.stringify({
+              labels: categoryStats.map(stat => stat.category || "Tanpa Kategori"),
+              data: categoryStats.map(stat => stat.count)
+            }) %>'>
+            <canvas id="categoryChart"></canvas>
+          </div>
+        <% } else { %>
+          <div class="text-center py-4">
+            <p>Belum ada data statistik kategori.</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  
+  <!-- File Count by Type -->
+  <div class="col-md-6 mb-4">
+    <div class="card">
+      <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i> File Berdasarkan Tipe</h5>
+      </div>
+      <div class="card-body">
+        <% if (typeStats && typeStats.length > 0) { %>
+          <div class="chart-container" style="height: 300px;">
+            <input type="hidden" id="typeChartData" value='<%= JSON.stringify({
+              labels: typeStats.map(stat => stat.type),
+              data: typeStats.map(stat => stat.count)
+            }) %>'>
+            <canvas id="typeChart"></canvas>
+          </div>
+        <% } else { %>
+          <div class="text-center py-4">
+            <p>Belum ada data statistik tipe file.</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Apakah Anda yakin ingin menghapus file <strong id="fileName"></strong>?</p>
+        <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i> Aksi ini tidak dapat dibatalkan.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form id="deleteForm" action="/superadmin/files/:id/delete" method="POST">
+          <button type="submit" class="btn btn-danger">Hapus File</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Delete modal setup
+    const deleteModal = document.getElementById('deleteModal');
+    if (deleteModal) {
+      deleteModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const fileId = button.getAttribute('data-id');
+        const fileName = button.getAttribute('data-name');
+        
+        document.getElementById('fileName').textContent = fileName;
+        document.getElementById('deleteForm').action = `/superadmin/files/${fileId}/delete`;
+      });
+    }
+    
+    // Charts setup
+    if (typeof Chart !== 'undefined') {
+      // Category Chart
+      const categoryChartData = document.getElementById('categoryChartData');
+      if (categoryChartData) {
+        try {
+          const categoryData = JSON.parse(categoryChartData.value);
+          const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+          new Chart(categoryCtx, {
+            type: 'pie',
+            data: {
+              labels: categoryData.labels,
+              datasets: [{
+                label: 'Jumlah File',
+                data: categoryData.data,
+                backgroundColor: [
+                  'rgba(255, 99, 132, 0.7)',
+                  'rgba(54, 162, 235, 0.7)',
+                  'rgba(255, 206, 86, 0.7)',
+                  'rgba(75, 192, 192, 0.7)',
+                  'rgba(153, 102, 255, 0.7)',
+                  'rgba(255, 159, 64, 0.7)',
+                  'rgba(255, 99, 132, 0.7)',
+                  'rgba(54, 162, 235, 0.7)'
+                ],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'right',
+                },
+                title: {
+                  display: false
+                }
+              }
+            }
+          });
+        } catch (error) {
+          console.error("Error initializing category chart:", error);
+        }
+      }
+      
+      // Type Chart
+      const typeChartData = document.getElementById('typeChartData');
+      if (typeChartData) {
+        try {
+          const typeData = JSON.parse(typeChartData.value);
+          const typeCtx = document.getElementById('typeChart').getContext('2d');
+          new Chart(typeCtx, {
+            type: 'bar',
+            data: {
+              labels: typeData.labels,
+              datasets: [{
+                label: 'Jumlah File',
+                data: typeData.data,
+                backgroundColor: [
+                  'rgba(255, 99, 132, 0.7)',
+                  'rgba(54, 162, 235, 0.7)',
+                  'rgba(255, 206, 86, 0.7)',
+                  'rgba(75, 192, 192, 0.7)',
+                  'rgba(153, 102, 255, 0.7)'
+                ],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: false
+                },
+                title: {
+                  display: false
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  precision: 0
+                }
+              }
+            }
+          });
+        } catch (error) {
+          console.error("Error initializing type chart:", error);
+        }
+      }
+    }
+  });
+</script>
+
+<style>
+  .file-icon {
+    text-align: center;
+    width: 50px;
+  }
+  
+  .file-icon-sm {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+  }
+  
+  .file-thumbnail {
+    height: 120px;
+    width: auto;
+    max-width: 100%;
+    object-fit: cover;
+  }
+  
+  .file-card {
+    transition: all 0.2s ease;
+  }
+  
+  .file-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+</style>

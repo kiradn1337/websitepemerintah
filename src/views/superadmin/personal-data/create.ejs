@@ -1,0 +1,406 @@
+<!-- Personal Data Create Form -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="fas fa-plus-circle me-2"></i> Tambah Data Pribadi</h2>
+  <a href="/superadmin/personal-data" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header bg-white">
+    <h5 class="mb-0">Form Penambahan Data Pribadi</h5>
+  </div>
+  <div class="card-body">
+    <% if (locals.errors && errors.length > 0) { %>
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          <% errors.forEach(error => { %>
+            <li><%= error.msg %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <form action="/superadmin/personal-data/create" method="POST" enctype="multipart/form-data">
+      <!-- Basic Information -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h5 class="form-section-title border-bottom pb-2 mb-4"><i class="fas fa-info-circle me-2"></i> Informasi Dasar</h5>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <label for="title" class="form-label">Judul Data <span class="text-danger">*</span></label>
+          <input type="text" class="form-control <%= locals.errors && errors.find(e => e.param === 'title') ? 'is-invalid' : '' %>" 
+                id="title" name="title" value="<%= locals.formData ? formData.title : '' %>" required>
+          <% if (locals.errors && errors.find(e => e.param === 'title')) { %>
+            <div class="invalid-feedback">
+              <%= errors.find(e => e.param === 'title').msg %>
+            </div>
+          <% } %>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <label for="category" class="form-label">Kategori <span class="text-danger">*</span></label>
+          <select class="form-select <%= locals.errors && errors.find(e => e.param === 'category') ? 'is-invalid' : '' %>" 
+                 id="category" name="category" required>
+            <option value="" disabled selected>Pilih Kategori</option>
+            <% categories.forEach(cat => { %>
+              <option value="<%= cat %>" <%= locals.formData && formData.category === cat ? 'selected' : '' %>><%= cat %></option>
+            <% }) %>
+            <option value="other">Lainnya</option>
+          </select>
+          <% if (locals.errors && errors.find(e => e.param === 'category')) { %>
+            <div class="invalid-feedback">
+              <%= errors.find(e => e.param === 'category').msg %>
+            </div>
+          <% } %>
+        </div>
+        
+        <!-- Custom category input (shown when "other" is selected) -->
+        <div class="col-md-6 mb-3 d-none" id="customCategoryContainer">
+          <label for="customCategory" class="form-label">Kategori Kustom <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="customCategory" name="customCategory" 
+                value="<%= locals.formData ? formData.customCategory : '' %>">
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <label for="userId" class="form-label">Pengguna <span class="text-danger">*</span></label>
+          <select class="form-select <%= locals.errors && errors.find(e => e.param === 'userId') ? 'is-invalid' : '' %>" 
+                 id="userId" name="userId" required>
+            <option value="" disabled selected>Pilih Pengguna</option>
+            <% users.forEach(user => { %>
+              <option value="<%= user.id %>" <%= locals.formData && formData.userId === user.id ? 'selected' : '' %>>
+                <%= user.fullName %> (<%= user.email %>) - <%= user.role %>
+              </option>
+            <% }) %>
+          </select>
+          <% if (locals.errors && errors.find(e => e.param === 'userId')) { %>
+            <div class="invalid-feedback">
+              <%= errors.find(e => e.param === 'userId').msg %>
+            </div>
+          <% } %>
+        </div>
+        
+        <div class="col-12 mb-3">
+          <label for="description" class="form-label">Deskripsi</label>
+          <textarea class="form-control <%= locals.errors && errors.find(e => e.param === 'description') ? 'is-invalid' : '' %>" 
+                   id="description" name="description" rows="3"><%= locals.formData ? formData.description : '' %></textarea>
+          <% if (locals.errors && errors.find(e => e.param === 'description')) { %>
+            <div class="invalid-feedback">
+              <%= errors.find(e => e.param === 'description').msg %>
+            </div>
+          <% } %>
+          <small class="text-muted">Berikan deskripsi singkat tentang data ini</small>
+        </div>
+      </div>
+
+      <!-- Data Content -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h5 class="form-section-title border-bottom pb-2 mb-4"><i class="fas fa-database me-2"></i> Konten Data</h5>
+        </div>
+
+        <div class="col-12 mb-3">
+          <label class="form-label">Jenis Data <span class="text-danger">*</span></label>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="dataType" id="dataTypeText" value="text" 
+                  <%= !locals.formData || formData.dataType === 'text' ? 'checked' : '' %>>
+            <label class="form-check-label" for="dataTypeText">
+              <i class="fas fa-align-left me-1"></i> Teks
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="dataType" id="dataTypeFile" value="file"
+                  <%= locals.formData && formData.dataType === 'file' ? 'checked' : '' %>>
+            <label class="form-check-label" for="dataTypeFile">
+              <i class="fas fa-file me-1"></i> File
+            </label>
+          </div>
+        </div>
+        
+        <!-- Text Data Input -->
+        <div class="col-12 mb-3" id="textDataContainer">
+          <label for="textData" class="form-label">Teks Data <span class="text-danger">*</span></label>
+          <textarea class="form-control <%= locals.errors && errors.find(e => e.param === 'textData') ? 'is-invalid' : '' %>" 
+                   id="textData" name="textData" rows="6"><%= locals.formData && formData.textData ? formData.textData : '' %></textarea>
+          <% if (locals.errors && errors.find(e => e.param === 'textData')) { %>
+            <div class="invalid-feedback">
+              <%= errors.find(e => e.param === 'textData').msg %>
+            </div>
+          <% } %>
+        </div>
+        
+        <!-- File Data Input -->
+        <div class="col-12 mb-3 d-none" id="fileDataContainer">
+          <label for="fileData" class="form-label">Unggah File <span class="text-danger">*</span></label>
+          <div class="file-drop-area">
+            <span class="fake-btn">Pilih File</span>
+            <span class="file-msg">atau seret dan lepas file disini</span>
+            <input class="file-input" type="file" id="fileData" name="fileData">
+          </div>
+          <div id="filePreview" class="mt-2 d-none">
+            <div class="card p-2">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-file fa-2x text-primary me-2"></i>
+                <div>
+                  <h6 class="file-name mb-0"></h6>
+                  <small class="file-size text-muted"></small>
+                </div>
+                <button type="button" class="btn btn-sm btn-link text-danger ms-auto" id="removeFile">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <% if (locals.errors && errors.find(e => e.param === 'fileData')) { %>
+            <div class="text-danger mt-2">
+              <%= errors.find(e => e.param === 'fileData').msg %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+      
+      <!-- Security Settings -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h5 class="form-section-title border-bottom pb-2 mb-4"><i class="fas fa-shield-alt me-2"></i> Pengaturan Keamanan</h5>
+        </div>
+        
+        <div class="col-md-12 mb-3">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="isEncrypted" name="isEncrypted" value="true"
+                  <%= locals.formData && formData.isEncrypted ? 'checked' : '' %>>
+            <label class="form-check-label" for="isEncrypted">
+              <i class="fas fa-lock me-1"></i> Enkripsi Data
+            </label>
+          </div>
+          <small class="text-muted">Data akan dienkripsi dan hanya dapat dilihat oleh pengguna yang memiliki akses.</small>
+        </div>
+        
+        <div class="col-md-6 mb-3 <%= locals.formData && formData.isEncrypted ? '' : 'd-none' %>" id="encryptionKeyContainer">
+          <label for="encryptionKey" class="form-label">Kunci Enkripsi <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <input type="password" class="form-control <%= locals.errors && errors.find(e => e.param === 'encryptionKey') ? 'is-invalid' : '' %>" 
+                  id="encryptionKey" name="encryptionKey" value="<%= locals.formData ? formData.encryptionKey : '' %>">
+            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <% if (locals.errors && errors.find(e => e.param === 'encryptionKey')) { %>
+            <div class="text-danger">
+              <%= errors.find(e => e.param === 'encryptionKey').msg %>
+            </div>
+          <% } %>
+          <small class="text-muted">Kunci ini akan digunakan untuk mengenkripsi dan mendekripsi data.</small>
+        </div>
+        
+        <div class="col-md-6 mb-3 <%= locals.formData && formData.isEncrypted ? '' : 'd-none' %>" id="confirmKeyContainer">
+          <label for="confirmKey" class="form-label">Konfirmasi Kunci <span class="text-danger">*</span></label>
+          <input type="password" class="form-control <%= locals.errors && errors.find(e => e.param === 'confirmKey') ? 'is-invalid' : '' %>" 
+                id="confirmKey" name="confirmKey" value="<%= locals.formData ? formData.confirmKey : '' %>">
+          <% if (locals.errors && errors.find(e => e.param === 'confirmKey')) { %>
+            <div class="invalid-feedback">
+              <%= errors.find(e => e.param === 'confirmKey').msg %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+      
+      <!-- Submit Buttons -->
+      <div class="d-flex justify-content-between">
+        <button type="reset" class="btn btn-outline-secondary">
+          <i class="fas fa-undo me-1"></i> Reset
+        </button>
+        <button type="submit" class="btn btn-danger">
+          <i class="fas fa-save me-1"></i> Simpan Data
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Category other selection
+    const categorySelect = document.getElementById('category');
+    const customCategoryContainer = document.getElementById('customCategoryContainer');
+    
+    categorySelect.addEventListener('change', function() {
+      if (this.value === 'other') {
+        customCategoryContainer.classList.remove('d-none');
+        document.getElementById('customCategory').setAttribute('required', 'required');
+      } else {
+        customCategoryContainer.classList.add('d-none');
+        document.getElementById('customCategory').removeAttribute('required');
+      }
+    });
+    
+    // Data type selection
+    const dataTypeText = document.getElementById('dataTypeText');
+    const dataTypeFile = document.getElementById('dataTypeFile');
+    const textDataContainer = document.getElementById('textDataContainer');
+    const fileDataContainer = document.getElementById('fileDataContainer');
+    
+    dataTypeText.addEventListener('change', function() {
+      if (this.checked) {
+        textDataContainer.classList.remove('d-none');
+        fileDataContainer.classList.add('d-none');
+        document.getElementById('textData').setAttribute('required', 'required');
+        document.getElementById('fileData').removeAttribute('required');
+      }
+    });
+    
+    dataTypeFile.addEventListener('change', function() {
+      if (this.checked) {
+        textDataContainer.classList.add('d-none');
+        fileDataContainer.classList.remove('d-none');
+        document.getElementById('textData').removeAttribute('required');
+        document.getElementById('fileData').setAttribute('required', 'required');
+      }
+    });
+    
+    // Encryption toggle
+    const isEncryptedCheckbox = document.getElementById('isEncrypted');
+    const encryptionKeyContainer = document.getElementById('encryptionKeyContainer');
+    const confirmKeyContainer = document.getElementById('confirmKeyContainer');
+    
+    isEncryptedCheckbox.addEventListener('change', function() {
+      if (this.checked) {
+        encryptionKeyContainer.classList.remove('d-none');
+        confirmKeyContainer.classList.remove('d-none');
+        document.getElementById('encryptionKey').setAttribute('required', 'required');
+        document.getElementById('confirmKey').setAttribute('required', 'required');
+      } else {
+        encryptionKeyContainer.classList.add('d-none');
+        confirmKeyContainer.classList.add('d-none');
+        document.getElementById('encryptionKey').removeAttribute('required');
+        document.getElementById('confirmKey').removeAttribute('required');
+      }
+    });
+    
+    // Toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const encryptionKey = document.getElementById('encryptionKey');
+    
+    togglePassword.addEventListener('click', function() {
+      const type = encryptionKey.getAttribute('type') === 'password' ? 'text' : 'password';
+      encryptionKey.setAttribute('type', type);
+      
+      // toggle the icon
+      this.querySelector('i').classList.toggle('fa-eye');
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+    
+    // File upload handling
+    const fileInput = document.querySelector('.file-input');
+    const fileDropArea = document.querySelector('.file-drop-area');
+    const fileMsg = document.querySelector('.file-msg');
+    const filePreview = document.getElementById('filePreview');
+    const fileName = document.querySelector('.file-name');
+    const fileSize = document.querySelector('.file-size');
+    const removeFileBtn = document.getElementById('removeFile');
+    
+    fileDropArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.classList.add('is-active');
+    });
+    
+    fileDropArea.addEventListener('dragleave', function() {
+      this.classList.remove('is-active');
+    });
+    
+    fileDropArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.classList.remove('is-active');
+      fileInput.files = e.dataTransfer.files;
+      updateFilePreview(fileInput.files[0]);
+    });
+    
+    fileInput.addEventListener('change', function() {
+      if (fileInput.files.length) {
+        updateFilePreview(fileInput.files[0]);
+      }
+    });
+    
+    removeFileBtn.addEventListener('click', function() {
+      fileInput.value = '';
+      filePreview.classList.add('d-none');
+      fileMsg.textContent = 'atau seret dan lepas file disini';
+    });
+    
+    function updateFilePreview(file) {
+      filePreview.classList.remove('d-none');
+      fileName.textContent = file.name;
+      
+      // Format file size
+      let size = file.size;
+      const units = ['B', 'KB', 'MB', 'GB'];
+      let i = 0;
+      while (size > 1024 && i < units.length - 1) {
+        size /= 1024;
+        i++;
+      }
+      fileSize.textContent = Math.round(size * 100) / 100 + ' ' + units[i];
+      
+      fileMsg.textContent = '1 file dipilih';
+    }
+  });
+</script>
+
+<style>
+  .form-section-title {
+    color: #dc3545;
+    font-size: 1.1rem;
+  }
+  
+  /* File Drop Area */
+  .file-drop-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 25px;
+    border: 2px dashed rgba(220, 53, 69, 0.4);
+    border-radius: 3px;
+    transition: 0.2s;
+    background-color: #f8f9fa;
+    text-align: center;
+    justify-content: center;
+  }
+  
+  .file-drop-area.is-active {
+    background-color: rgba(220, 53, 69, 0.05);
+  }
+  
+  .fake-btn {
+    flex-shrink: 0;
+    background-color: rgba(220, 53, 69, 0.9);
+    border: 1px solid rgba(220, 53, 69, 0.1);
+    border-radius: 3px;
+    padding: 8px 15px;
+    margin-right: 10px;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  
+  .file-msg {
+    font-size: small;
+    font-weight: 300;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .file-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    opacity: 0;
+  }
+</style>

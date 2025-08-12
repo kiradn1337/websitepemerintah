@@ -1,0 +1,23 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+  <div class="container-fluid">
+    <button class="btn btn-danger btn-sm" id="sidebarToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+    
+    <div class="d-flex ms-auto">
+      <div class="dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+          <i class="fas fa-user-circle me-1"></i>
+          <% if (locals.user) { %>
+            <%= user.fullName %>
+          <% } %>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item" href="/users/change-password"><i class="fas fa-key me-2"></i>Ubah Password</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

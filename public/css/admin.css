@@ -1,0 +1,257 @@
+/* Admin Panel Styling for Portal Pemerintahan
+   Red and White Theme (Indonesia Merdeka) */
+
+:root {
+  --primary-color: #E3000F;     /* Red */
+  --secondary-color: #FFFFFF;   /* White */
+  --accent-color: #191970;      /* Navy Blue */
+  --dark-color: #343a40;        /* Dark Gray */
+  --light-color: #f8f9fa;       /* Light Gray */
+  --success-color: #28a745;     /* Green */
+  --warning-color: #ffc107;     /* Yellow */
+  --danger-color: #dc3545;      /* Red */
+  --info-color: #17a2b8;        /* Blue */
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Sidebar */
+#sidebar-wrapper {
+  min-height: 100vh;
+  margin-left: -15rem;
+  transition: margin 0.25s ease-out;
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+}
+
+#sidebar-wrapper .list-group {
+  width: 15rem;
+}
+
+#sidebar-wrapper .list-group-item {
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+  padding: 0.75rem 1.25rem;
+}
+
+#sidebar-wrapper .list-group-item:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+#sidebar-wrapper .list-group-item.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+#sidebar-wrapper .list-group-item i {
+  width: 20px;
+  text-align: center;
+}
+
+/* Page Content */
+#page-content-wrapper {
+  min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+  margin-left: 0;
+}
+
+/* Dashboard Stats */
+.stat-card {
+  border-radius: 10px;
+  border-left: 5px solid;
+  transition: transform 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-card .icon {
+  font-size: 2rem;
+  opacity: 0.7;
+}
+
+.stat-card.primary {
+  border-left-color: var(--primary-color);
+}
+
+.stat-card.success {
+  border-left-color: var(--success-color);
+}
+
+.stat-card.warning {
+  border-left-color: var(--warning-color);
+}
+
+.stat-card.info {
+  border-left-color: var(--info-color);
+}
+
+/* Data Tables */
+.table-responsive {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+.admin-table thead th {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  font-weight: 500;
+}
+
+.admin-table tbody tr:nth-child(even) {
+  background-color: rgba(0,0,0,0.02);
+}
+
+.admin-table tbody tr:hover {
+  background-color: rgba(227, 0, 15, 0.05);
+}
+
+/* Forms */
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(227, 0, 15, 0.25);
+}
+
+/* File Upload */
+.custom-file-upload {
+  border: 2px dashed #ddd;
+  border-radius: 10px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.custom-file-upload:hover {
+  border-color: var(--primary-color);
+}
+
+.custom-file-upload i {
+  font-size: 3rem;
+  color: #ddd;
+  margin-bottom: 1rem;
+}
+
+/* Tags Input */
+.tags-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  min-height: calc(1.5em + 0.75rem + 2px);
+}
+
+.tags-input:focus-within {
+  color: #212529;
+  background-color: #fff;
+  border-color: var(--primary-color);
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(227, 0, 15, 0.25);
+}
+
+.tags-input .tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #e9ecef;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.tags-input .tag .remove {
+  margin-left: 0.25rem;
+  cursor: pointer;
+}
+
+.tags-input input {
+  border: none;
+  outline: none;
+  flex: 1;
+  min-width: 100px;
+  padding: 0;
+  background: transparent;
+}
+
+/* Media Queries for Responsiveness */
+@media (min-width: 768px) {
+  #sidebar-wrapper {
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: -15rem;
+  }
+}
+
+/* TinyMCE Editor Customization */
+.tox-tinymce {
+  border-radius: 0.25rem !important;
+  border-color: #ced4da !important;
+}
+
+.tox .tox-statusbar {
+  border-top: 1px solid #ced4da !important;
+}
+
+/* Activity Log */
+.timeline {
+  position: relative;
+  padding-left: 30px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  background-color: #e9ecef;
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 1.5rem;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -36px;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  border: 2px solid #fff;
+}
+
+.timeline-date {
+  font-size: 0.8rem;
+  color: #6c757d;
+}

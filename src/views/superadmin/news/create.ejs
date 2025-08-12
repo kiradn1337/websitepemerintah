@@ -1,0 +1,349 @@
+<!-- Create News Form -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="fas fa-newspaper me-2"></i> Tambah Berita Baru</h2>
+  <a href="/superadmin/news" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar Berita
+  </a>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header bg-white">
+    <h5 class="mb-0">Form Berita Baru</h5>
+  </div>
+  <div class="card-body">
+    <form action="/superadmin/news" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+      <div class="row">
+        <!-- Title -->
+        <div class="col-md-12 mb-3">
+          <label for="title" class="form-label">Judul Berita <span class="text-danger">*</span></label>
+          <input type="text" class="form-control <%= locals.errors && errors.title ? 'is-invalid' : '' %>" 
+                id="title" name="title" value="<%= locals.formData ? formData.title : '' %>" required>
+          <% if (locals.errors && errors.title) { %>
+            <div class="invalid-feedback"><%= errors.title.message %></div>
+          <% } %>
+        </div>
+        
+        <!-- Slug -->
+        <div class="col-md-12 mb-3">
+          <label for="slug" class="form-label">Slug</label>
+          <div class="input-group">
+            <span class="input-group-text">/news/</span>
+            <input type="text" class="form-control <%= locals.errors && errors.slug ? 'is-invalid' : '' %>" 
+                  id="slug" name="slug" value="<%= locals.formData ? formData.slug : '' %>">
+            <% if (locals.errors && errors.slug) { %>
+              <div class="invalid-feedback"><%= errors.slug.message %></div>
+            <% } %>
+          </div>
+          <div class="form-text">Akan otomatis dibuat dari judul jika dikosongkan.</div>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <!-- Category -->
+          <label for="category" class="form-label">Kategori <span class="text-danger">*</span></label>
+          <select class="form-select <%= locals.errors && errors.category ? 'is-invalid' : '' %>" 
+                 id="category" name="category" required>
+            <option value="" disabled <%= !locals.formData || !formData.category ? 'selected' : '' %>>Pilih Kategori...</option>
+            <% categories.forEach(category => { %>
+              <option value="<%= category %>" <%= locals.formData && formData.category === category ? 'selected' : '' %>><%= category %></option>
+            <% }) %>
+            <option value="other" <%= locals.formData && formData.category === 'other' ? 'selected' : '' %>>Lainnya</option>
+          </select>
+          <% if (locals.errors && errors.category) { %>
+            <div class="invalid-feedback"><%= errors.category.message %></div>
+          <% } %>
+        </div>
+        
+        <!-- Other Category -->
+        <div class="col-md-6 mb-3 <%= locals.formData && formData.category === 'other' ? '' : 'd-none' %>" id="otherCategoryGroup">
+          <label for="otherCategory" class="form-label">Kategori Lainnya <span class="text-danger">*</span></label>
+          <input type="text" class="form-control <%= locals.errors && errors.otherCategory ? 'is-invalid' : '' %>" 
+                id="otherCategory" name="otherCategory" value="<%= locals.formData ? formData.otherCategory : '' %>">
+          <% if (locals.errors && errors.otherCategory) { %>
+            <div class="invalid-feedback"><%= errors.otherCategory.message %></div>
+          <% } %>
+        </div>
+        
+        <!-- Featured Image -->
+        <div class="col-md-12 mb-3">
+          <label for="featuredImage" class="form-label">Gambar Unggulan</label>
+          <input type="file" class="form-control <%= locals.errors && errors.featuredImage ? 'is-invalid' : '' %>" 
+                id="featuredImage" name="featuredImage" accept="image/*">
+          <% if (locals.errors && errors.featuredImage) { %>
+            <div class="invalid-feedback"><%= errors.featuredImage.message %></div>
+          <% } %>
+          <div class="form-text">Format gambar: JPG, JPEG, PNG. Ukuran maksimal: 5MB. Resolusi optimal: 1200x630px.</div>
+          
+          <div class="mt-2 d-none" id="imagePreviewContainer">
+            <img id="imagePreview" class="img-thumbnail" style="max-height: 200px;" alt="Preview">
+          </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="col-md-12 mb-4">
+          <label for="content" class="form-label">Konten <span class="text-danger">*</span></label>
+          <textarea class="form-control <%= locals.errors && errors.content ? 'is-invalid' : '' %>" 
+                   id="content" name="content" rows="12" required><%= locals.formData ? formData.content : '' %></textarea>
+          <% if (locals.errors && errors.content) { %>
+            <div class="invalid-feedback"><%= errors.content.message %></div>
+          <% } %>
+        </div>
+        
+        <!-- Summary -->
+        <div class="col-md-12 mb-3">
+          <label for="summary" class="form-label">Ringkasan</label>
+          <textarea class="form-control <%= locals.errors && errors.summary ? 'is-invalid' : '' %>" 
+                   id="summary" name="summary" rows="3"><%= locals.formData ? formData.summary : '' %></textarea>
+          <% if (locals.errors && errors.summary) { %>
+            <div class="invalid-feedback"><%= errors.summary.message %></div>
+          <% } else { %>
+            <div class="form-text">Jika dikosongkan, akan otomatis diambil dari paragraf pertama konten.</div>
+          <% } %>
+        </div>
+        
+        <!-- Tags -->
+        <div class="col-md-12 mb-3">
+          <label for="tags" class="form-label">Tags</label>
+          <input type="text" class="form-control <%= locals.errors && errors.tags ? 'is-invalid' : '' %>" 
+                id="tags" name="tags" value="<%= locals.formData ? formData.tags : '' %>" placeholder="Pisahkan dengan koma, contoh: politik, ekonomi, pendidikan">
+          <% if (locals.errors && errors.tags) { %>
+            <div class="invalid-feedback"><%= errors.tags.message %></div>
+          <% } %>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <!-- Status -->
+          <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+          <select class="form-select <%= locals.errors && errors.status ? 'is-invalid' : '' %>" 
+                 id="status" name="status" required>
+            <option value="draft" <%= locals.formData && formData.status === 'draft' ? 'selected' : '' %>>Draft</option>
+            <option value="published" <%= locals.formData && formData.status === 'published' ? 'selected' : '' %>>Publikasikan Sekarang</option>
+            <option value="scheduled" <%= locals.formData && formData.status === 'scheduled' ? 'selected' : '' %>>Jadwalkan Publikasi</option>
+          </select>
+          <% if (locals.errors && errors.status) { %>
+            <div class="invalid-feedback"><%= errors.status.message %></div>
+          <% } %>
+        </div>
+        
+        <!-- Publish Date -->
+        <div class="col-md-6 mb-3 <%= locals.formData && formData.status === 'scheduled' ? '' : 'd-none' %>" id="publishDateGroup">
+          <label for="publishDate" class="form-label">Tanggal Publikasi <span class="text-danger">*</span></label>
+          <input type="datetime-local" class="form-control <%= locals.errors && errors.publishDate ? 'is-invalid' : '' %>" 
+                id="publishDate" name="publishDate" value="<%= locals.formData && formData.publishDate ? new Date(formData.publishDate).toISOString().slice(0, 16) : '' %>">
+          <% if (locals.errors && errors.publishDate) { %>
+            <div class="invalid-feedback"><%= errors.publishDate.message %></div>
+          <% } %>
+        </div>
+        
+        <!-- Featured -->
+        <div class="col-md-6 mb-3">
+          <div class="form-check form-switch mt-4">
+            <input class="form-check-input" type="checkbox" id="isFeatured" name="isFeatured" 
+                 <%= locals.formData && formData.isFeatured ? 'checked' : '' %>>
+            <label class="form-check-label" for="isFeatured">Jadikan Berita Unggulan</label>
+          </div>
+          <div class="form-text">Berita unggulan akan ditampilkan di halaman utama website.</div>
+        </div>
+        
+        <!-- Allow Comments -->
+        <div class="col-md-6 mb-3">
+          <div class="form-check form-switch mt-4">
+            <input class="form-check-input" type="checkbox" id="allowComments" name="allowComments" 
+                 <%= !locals.formData || formData.allowComments !== false ? 'checked' : '' %>>
+            <label class="form-check-label" for="allowComments">Izinkan Komentar</label>
+          </div>
+          <div class="form-text">Pengunjung dapat memberikan komentar pada berita ini.</div>
+        </div>
+      </div>
+      
+      <hr>
+      
+      <!-- Meta Tags for SEO -->
+      <div class="mb-4">
+        <h5>SEO Metadata</h5>
+        <p class="text-muted">Informasi ini akan membantu optimasi mesin pencari (SEO) untuk berita ini.</p>
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="metaTitle" class="form-label">Meta Title</label>
+            <input type="text" class="form-control" id="metaTitle" name="metaTitle" 
+                  value="<%= locals.formData ? formData.metaTitle : '' %>">
+            <div class="form-text">Jika dikosongkan, judul berita akan digunakan.</div>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label for="metaKeywords" class="form-label">Meta Keywords</label>
+            <input type="text" class="form-control" id="metaKeywords" name="metaKeywords" 
+                  value="<%= locals.formData ? formData.metaKeywords : '' %>" placeholder="Pisahkan dengan koma">
+          </div>
+          
+          <div class="col-md-12 mb-3">
+            <label for="metaDescription" class="form-label">Meta Description</label>
+            <textarea class="form-control" id="metaDescription" name="metaDescription" 
+                     rows="2"><%= locals.formData ? formData.metaDescription : '' %></textarea>
+            <div class="form-text">
+              Deskripsi singkat untuk hasil pencarian. Jika dikosongkan, ringkasan berita akan digunakan.
+              <span class="text-count"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <hr>
+      
+      <!-- Submit Button -->
+      <div class="d-flex justify-content-between">
+        <button type="reset" class="btn btn-light">
+          <i class="fas fa-redo me-1"></i> Reset Form
+        </button>
+        <div>
+          <button type="submit" name="action" value="draft" class="btn btn-secondary me-2">
+            <i class="fas fa-save me-1"></i> Simpan sebagai Draft
+          </button>
+          <button type="submit" name="action" value="publish" class="btn btn-danger">
+            <i class="fas fa-paper-plane me-1"></i> Publikasikan
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Initialize TinyMCE WYSIWYG editor -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function(event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      
+      form.classList.add('was-validated');
+    });
+    
+    // Title to slug conversion
+    const titleInput = document.getElementById('title');
+    const slugInput = document.getElementById('slug');
+    
+    titleInput.addEventListener('blur', function() {
+      if (slugInput.value === '') {
+        slugInput.value = createSlug(titleInput.value);
+      }
+    });
+    
+    function createSlug(text) {
+      return text.toString().toLowerCase()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start of text
+        .replace(/-+$/, '');            // Trim - from end of text
+    }
+    
+    // Category other field toggle
+    const categorySelect = document.getElementById('category');
+    const otherCategoryGroup = document.getElementById('otherCategoryGroup');
+    const otherCategoryInput = document.getElementById('otherCategory');
+    
+    categorySelect.addEventListener('change', function() {
+      if (this.value === 'other') {
+        otherCategoryGroup.classList.remove('d-none');
+        otherCategoryInput.required = true;
+      } else {
+        otherCategoryGroup.classList.add('d-none');
+        otherCategoryInput.required = false;
+      }
+    });
+    
+    // Status field toggle for scheduled publishing
+    const statusSelect = document.getElementById('status');
+    const publishDateGroup = document.getElementById('publishDateGroup');
+    const publishDateInput = document.getElementById('publishDate');
+    
+    statusSelect.addEventListener('change', function() {
+      if (this.value === 'scheduled') {
+        publishDateGroup.classList.remove('d-none');
+        publishDateInput.required = true;
+        
+        // Set default publish date to tomorrow
+        if (!publishDateInput.value) {
+          const tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          tomorrow.setHours(10, 0, 0, 0);
+          publishDateInput.value = tomorrow.toISOString().slice(0, 16);
+        }
+      } else {
+        publishDateGroup.classList.add('d-none');
+        publishDateInput.required = false;
+      }
+    });
+    
+    // Image preview
+    const featuredImage = document.getElementById('featuredImage');
+    const imagePreview = document.getElementById('imagePreview');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    
+    featuredImage.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          imagePreview.src = e.target.result;
+          imagePreviewContainer.classList.remove('d-none');
+        };
+        
+        reader.readAsDataURL(this.files[0]);
+      } else {
+        imagePreviewContainer.classList.add('d-none');
+      }
+    });
+    
+    // Meta description character count
+    const metaDescription = document.getElementById('metaDescription');
+    const textCount = document.querySelector('.text-count');
+    
+    metaDescription.addEventListener('input', function() {
+      const count = this.value.length;
+      const ideal = count >= 120 && count <= 160;
+      
+      textCount.innerHTML = `<span class="${ideal ? 'text-success' : 'text-warning'}">${count}/160 karakter</span>`;
+    });
+    
+    // Initialize tinymce if available
+    if (typeof tinymce !== 'undefined') {
+      tinymce.init({
+        selector: '#content',
+        height: 400,
+        menubar: true,
+        plugins: [
+          'advlist autolink lists link image charmap print preview anchor',
+          'searchreplace visualblocks code fullscreen',
+          'insertdatetime media table paste code help wordcount'
+        ],
+        toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.6; }',
+        setup: function(editor) {
+          editor.on('change', function() {
+            // Update the hidden textarea
+            tinymce.triggerSave();
+          });
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  .tox-tinymce {
+    border-radius: 0.25rem;
+  }
+  
+  .form-switch .form-check-input {
+    height: 1.25rem;
+    width: 2.25rem;
+  }
+</style>

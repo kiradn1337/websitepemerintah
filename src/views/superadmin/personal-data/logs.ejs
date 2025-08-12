@@ -1,0 +1,322 @@
+<!-- Personal Data Access Logs -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="fas fa-history me-2"></i> Log Akses Data Pribadi</h2>
+  <div>
+    <a href="/superadmin/personal-data/<%= personalData.id %>" class="btn btn-outline-info me-2">
+      <i class="fas fa-eye me-1"></i> Lihat Detail
+    </a>
+    <a href="/superadmin/personal-data" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Data Summary -->
+  <div class="col-md-4 mb-4">
+    <div class="card">
+      <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="fas fa-database me-2"></i> Informasi Data</h5>
+      </div>
+      <div class="card-body">
+        <h5 class="text-danger"><%= personalData.title %></h5>
+        <% if (personalData.description) { %>
+          <p class="text-muted"><%= personalData.description %></p>
+        <% } %>
+        
+        <div class="mt-3">
+          <div class="mb-2">
+            <span class="text-muted">Kategori:</span>
+            <span class="badge bg-light text-dark border ms-1"><%= personalData.category %></span>
+          </div>
+          <div class="mb-2">
+            <span class="text-muted">Jenis Data:</span>
+            <% if (personalData.dataType === 'text') { %>
+              <span class="ms-1"><i class="fas fa-align-left text-primary me-1"></i> Teks</span>
+            <% } else if (personalData.dataType === 'file') { %>
+              <span class="ms-1"><i class="fas fa-file text-primary me-1"></i> File</span>
+            <% } %>
+          </div>
+          <div class="mb-2">
+            <span class="text-muted">Status:</span>
+            <% if (personalData.isEncrypted) { %>
+              <span class="badge bg-danger ms-1"><i class="fas fa-lock me-1"></i> Terenkripsi</span>
+            <% } else { %>
+              <span class="badge bg-success ms-1"><i class="fas fa-unlock me-1"></i> Tidak Terenkripsi</span>
+            <% } %>
+          </div>
+          <div class="mb-2">
+            <span class="text-muted">Pemilik:</span>
+            <% if (personalData.user) { %>
+              <span class="ms-1">
+                <%= personalData.user.fullName %> 
+                <span class="badge bg-<%= personalData.user.role === 'superadmin' ? 'danger' : (personalData.user.role === 'admin' ? 'warning' : 'info') %>">
+                  <%= personalData.user.role.charAt(0).toUpperCase() + personalData.user.role.slice(1) %>
+                </span>
+              </span>
+            <% } else { %>
+              <span class="text-muted ms-1">-</span>
+            <% } %>
+          </div>
+          <div>
+            <span class="text-muted">Tanggal Dibuat:</span>
+            <span class="ms-1">
+              <%= new Date(personalData.createdAt).toLocaleDateString('id-ID', {
+                year: 'numeric', month: 'long', day: 'numeric'
+              }) %>
+            </span>
+          </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="mt-4">
+          <div class="d-grid gap-2">
+            <a href="/superadmin/personal-data/<%= personalData.id %>/edit" class="btn btn-outline-primary btn-sm">
+              <i class="fas fa-edit me-1"></i> Edit Data
+            </a>
+            <a href="/superadmin/personal-data/<%= personalData.id %>" class="btn btn-outline-secondary btn-sm">
+              <i class="fas fa-eye me-1"></i> Lihat Detail
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Activity Summary -->
+    <div class="card mt-3">
+      <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i> Ringkasan Aktivitas</h5>
+      </div>
+      <div class="card-body">
+        <!-- Action Type Distribution -->
+        <div class="mb-4">
+          <h6 class="text-muted mb-3">Jenis Aktivitas</h6>
+          
+          <% 
+            const actionCounts = {};
+            accessLogs.forEach(log => {
+              actionCounts[log.action] = (actionCounts[log.action] || 0) + 1;
+            });
+          %>
+          
+          <% Object.entries(actionCounts).forEach(([action, count]) => { %>
+            <div class="mb-2">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span>
+                  <%= action %>
+                  <span class="badge rounded-pill bg-light text-dark border"><%= count %></span>
+                </span>
+                <small><%= Math.round((count / accessLogs.length) * 100) %>%</small>
+              </div>
+              <div class="progress" style="height: 6px;">
+                <% const progressWidth = Math.round((count / accessLogs.length) * 100); %>
+                <div class="progress-bar <%= action === 'VIEW' ? 'bg-info' : (action === 'UPDATE' ? 'bg-warning' : (action === 'DELETE' ? 'bg-danger' : (action === 'DECRYPT' ? 'bg-success' : 'bg-primary'))) %>" 
+                     role="progressbar" 
+                     data-width="<%= progressWidth %>"></div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+        
+        <!-- Time Distribution -->
+        <div>
+          <h6 class="text-muted mb-3">Aktivitas dalam 7 hari terakhir</h6>
+          
+          <% 
+            // Create date buckets for last 7 days
+            const today = new Date();
+            const days = [];
+            const dailyCounts = {};
+            
+            for(let i=6; i>=0; i--) {
+              const date = new Date();
+              date.setDate(today.getDate() - i);
+              const dateStr = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+              days.push(dateStr);
+              dailyCounts[dateStr] = 0;
+            }
+            
+            // Count logs per day
+            accessLogs.forEach(log => {
+              const logDate = new Date(log.createdAt);
+              const daysDiff = Math.floor((today - logDate) / (1000 * 60 * 60 * 24));
+              
+              if (daysDiff >= 0 && daysDiff < 7) {
+                const dateStr = logDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+                dailyCounts[dateStr] = (dailyCounts[dateStr] || 0) + 1;
+              }
+            });
+            
+            const maxCount = Math.max(...Object.values(dailyCounts), 1);
+          %>
+          
+          <div class="chart-container">
+            <% days.forEach(day => { %>
+              <div class="chart-bar">
+                <div class="chart-column">
+                  <% const chartHeight = Math.round((dailyCounts[day] / maxCount) * 100); %>
+                  <div class="chart-value" data-height="<%= chartHeight %>"></div>
+                </div>
+                <div class="chart-label"><%= day %></div>
+                <div class="chart-count"><%= dailyCounts[day] || 0 %></div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Access Logs -->
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-list me-2"></i> Daftar Log Akses</h5>
+        <span class="badge bg-secondary"><%= accessLogs.length %> log</span>
+      </div>
+      
+      <% if (accessLogs && accessLogs.length > 0) { %>
+        <div class="list-group list-group-flush">
+          <% accessLogs.forEach(log => { %>
+            <div class="list-group-item">
+              <div class="d-flex align-items-center mb-2">
+                <div class="avatar avatar-sm me-3 bg-<%= log.user.role === 'superadmin' ? 'danger' : (log.user.role === 'admin' ? 'warning' : 'info') %>">
+                  <%= log.user.fullName.substring(0, 2).toUpperCase() %>
+                </div>
+                <div>
+                  <div class="fw-bold"><%= log.user.fullName %></div>
+                  <div class="text-muted small">
+                    <span class="badge bg-<%= log.user.role === 'superadmin' ? 'danger' : (log.user.role === 'admin' ? 'warning' : 'info') %>">
+                      <%= log.user.role.charAt(0).toUpperCase() + log.user.role.slice(1) %>
+                    </span>
+                  </div>
+                </div>
+                <div class="ms-auto text-end">
+                  <span class="badge bg-<%= log.action === 'VIEW' ? 'info' : (log.action === 'UPDATE' ? 'warning' : (log.action === 'DELETE' ? 'danger' : (log.action === 'DECRYPT' ? 'success' : 'primary'))) %>">
+                    <%= log.action %>
+                  </span>
+                  <div class="text-muted small">
+                    <i class="fas fa-clock me-1"></i>
+                    <%= new Date(log.createdAt).toLocaleDateString('id-ID', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    }) %>
+                  </div>
+                </div>
+              </div>
+              
+              <% if (log.details) { %>
+                <div class="log-details">
+                  <i class="fas fa-info-circle me-1 text-muted"></i>
+                  <%= log.details %>
+                </div>
+              <% } %>
+              
+              <% if (log.metadata) { %>
+                <div class="mt-2">
+                  <button class="btn btn-sm btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#metadata-<%= log.id %>">
+                    <i class="fas fa-code me-1"></i> Lihat Metadata
+                  </button>
+                  <div class="collapse mt-2" id="metadata-<%= log.id %>">
+                    <pre class="bg-light p-2 rounded"><code><%= JSON.stringify(log.metadata, null, 2) %></code></pre>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="card-body text-center py-5">
+          <i class="fas fa-history fa-3x text-muted mb-3"></i>
+          <p>Belum ada aktivitas log untuk data ini.</p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<style>
+  .avatar {
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    border-radius: 50%;
+    display: inline-block;
+    color: #fff;
+    text-align: center;
+    font-weight: 500;
+  }
+  
+  .avatar-sm {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 12px;
+  }
+  
+  .log-details {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  /* Simple bar chart */
+  .chart-container {
+    display: flex;
+    align-items: flex-end;
+    height: 100px;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  
+  .chart-bar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .chart-column {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  
+  .chart-value {
+    width: 100%;
+    background-color: rgba(220, 53, 69, 0.7);
+    border-radius: 3px 3px 0 0;
+    min-height: 2px;
+  }
+  
+  .chart-label {
+    font-size: 0.7rem;
+    color: #6c757d;
+    margin-top: 5px;
+  }
+  
+  .chart-count {
+    font-size: 0.7rem;
+    font-weight: bold;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Set progress bar widths
+    document.querySelectorAll('.progress-bar[data-width]').forEach(bar => {
+      const width = bar.getAttribute('data-width');
+      bar.style.width = width + '%';
+    });
+    
+    // Set chart heights
+    document.querySelectorAll('.chart-value[data-height]').forEach(chart => {
+      const height = chart.getAttribute('data-height');
+      chart.style.height = height + '%';
+    });
+  });
+</script>

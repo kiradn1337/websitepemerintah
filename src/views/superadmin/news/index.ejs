@@ -1,0 +1,241 @@
+<!-- News Management -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="fas fa-newspaper me-2"></i> Manajemen Berita</h2>
+  <a href="/superadmin/news/create" class="btn btn-danger">
+    <i class="fas fa-plus me-1"></i> Tambah Berita Baru
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header bg-white">
+    <div class="row">
+      <div class="col-md-6 mb-2 mb-md-0">
+        <form action="/superadmin/news" method="get" class="d-flex">
+          <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Cari berita..." value="<%= search || '' %>">
+            <button type="submit" class="btn btn-outline-danger">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex justify-content-md-end gap-2">
+          <select name="category" class="form-select" style="max-width: 150px;" onchange="window.location.href=`/superadmin/news?category=${this.value}&status=<%= status || '' %>&search=<%= search || '' %>`">
+            <option value="">Semua Kategori</option>
+            <% categories.forEach(cat => { %>
+              <option value="<%= cat %>" <%= category === cat ? 'selected' : '' %>><%= cat %></option>
+            <% }) %>
+          </select>
+          
+          <select name="status" class="form-select" style="max-width: 150px;" onchange="window.location.href=`/superadmin/news?status=${this.value}&category=<%= category || '' %>&search=<%= search || '' %>`">
+            <option value="">Semua Status</option>
+            <option value="published" <%= status === 'published' ? 'selected' : '' %>>Diterbitkan</option>
+            <option value="draft" <%= status === 'draft' ? 'selected' : '' %>>Draft</option>
+            <option value="archived" <%= status === 'archived' ? 'selected' : '' %>>Diarsipkan</option>
+          </select>
+          
+          <select name="sortBy" class="form-select" style="max-width: 180px;" onchange="window.location.href=`/superadmin/news?sortBy=${this.value}&category=<%= category || '' %>&status=<%= status || '' %>&search=<%= search || '' %>`">
+            <option value="newest" <%= sortBy === 'newest' ? 'selected' : '' %>>Terbaru</option>
+            <option value="oldest" <%= sortBy === 'oldest' ? 'selected' : '' %>>Terlama</option>
+            <option value="title_asc" <%= sortBy === 'title_asc' ? 'selected' : '' %>>Judul (A-Z)</option>
+            <option value="title_desc" <%= sortBy === 'title_desc' ? 'selected' : '' %>>Judul (Z-A)</option>
+            <option value="popular" <%= sortBy === 'popular' ? 'selected' : '' %>>Terpopuler</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th style="width: 50px;">#</th>
+          <th>Judul</th>
+          <th>Kategori</th>
+          <th>Penulis</th>
+          <th>Status</th>
+          <th>Tanggal Terbit</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (news && news.length > 0) { %>
+          <% news.forEach((item, index) => { %>
+            <tr>
+              <td><%= (page - 1) * limit + index + 1 %></td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <% if (item.featuredImage) { %>
+                    <div class="news-thumbnail me-2">
+                      <img src="/uploads/news/<%= item.featuredImage %>" class="img-thumbnail" alt="<%= item.title %>">
+                    </div>
+                  <% } else { %>
+                    <div class="news-thumbnail me-2 bg-light text-center">
+                      <i class="fas fa-newspaper"></i>
+                    </div>
+                  <% } %>
+                  <div>
+                    <h6 class="mb-0"><%= item.title %></h6>
+                    <small class="text-muted"><%= item.slug %></small>
+                  </div>
+                </div>
+              </td>
+              <td><%= item.category %></td>
+              <td>
+                <% if (item.author) { %>
+                  <div class="d-flex align-items-center">
+                    <div class="avatar avatar-sm me-2 bg-<%= item.author.role === 'superadmin' ? 'danger' : (item.author.role === 'admin' ? 'warning' : 'info') %>">
+                      <%= item.author.fullName.substring(0, 2).toUpperCase() %>
+                    </div>
+                    <span><%= item.author.fullName %></span>
+                  </div>
+                <% } else { %>
+                  <span class="text-muted">Admin</span>
+                <% } %>
+              </td>
+              <td>
+                <span class="badge bg-<%= item.status === 'published' ? 'success' : (item.status === 'draft' ? 'warning' : 'secondary') %>">
+                  <%= item.status === 'published' ? 'Diterbitkan' : (item.status === 'draft' ? 'Draft' : 'Diarsipkan') %>
+                </span>
+              </td>
+              <td>
+                <%= new Date(item.publishDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                <% if (item.viewCount) { %>
+                  <div class="small text-muted">
+                    <i class="fas fa-eye me-1"></i> <%= item.viewCount %> views
+                  </div>
+                <% } %>
+              </td>
+              <td>
+                <div class="btn-group">
+                  <a href="/news/<%= item.slug %>" class="btn btn-sm btn-outline-secondary" target="_blank">
+                    <i class="fas fa-eye"></i>
+                  </a>
+                  <a href="/superadmin/news/<%= item.id %>/edit" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  <button type="button" class="btn btn-sm btn-outline-danger" 
+                          data-bs-toggle="modal" 
+                          data-bs-target="#deleteModal" 
+                          data-id="<%= item.id %>" 
+                          data-title="<%= item.title %>">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="7" class="text-center py-4">
+              <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+              <p>Tidak ada berita yang ditemukan.</p>
+              <a href="/superadmin/news/create" class="btn btn-danger">
+                <i class="fas fa-plus me-1"></i> Tambah Berita Baru
+              </a>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  
+  <% if (news && news.length > 0) { %>
+    <div class="card-footer bg-white">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          Menampilkan <%= (page - 1) * limit + 1 %> sampai <%= Math.min(page * limit, totalItems) %> dari <%= totalItems %> berita
+        </div>
+        <nav>
+          <ul class="pagination mb-0">
+            <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+              <a class="page-link" href="/superadmin/news?page=<%= page - 1 %>&limit=<%= limit %>&category=<%= category || '' %>&status=<%= status || '' %>&search=<%= search || '' %>">
+                <i class="fas fa-angle-left"></i>
+              </a>
+            </li>
+            
+            <% for (let i = Math.max(1, page - 2); i <= Math.min(totalPages, page + 2); i++) { %>
+              <li class="page-item <%= page == i ? 'active' : '' %>">
+                <a class="page-link" href="/superadmin/news?page=<%= i %>&limit=<%= limit %>&category=<%= category || '' %>&status=<%= status || '' %>&search=<%= search || '' %>">
+                  <%= i %>
+                </a>
+              </li>
+            <% } %>
+            
+            <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
+              <a class="page-link" href="/superadmin/news?page=<%= page + 1 %>&limit=<%= limit %>&category=<%= category || '' %>&status=<%= status || '' %>&search=<%= search || '' %>">
+                <i class="fas fa-angle-right"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Apakah Anda yakin ingin menghapus berita <strong id="newsTitle"></strong>?</p>
+        <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i> Aksi ini tidak dapat dibatalkan.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form id="deleteForm" action="/superadmin/news/:id/delete" method="POST">
+          <button type="submit" class="btn btn-danger">Hapus Berita</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const deleteModal = document.getElementById('deleteModal');
+    if (deleteModal) {
+      deleteModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const newsId = button.getAttribute('data-id');
+        const newsTitle = button.getAttribute('data-title');
+        
+        document.getElementById('newsTitle').textContent = newsTitle;
+        document.getElementById('deleteForm').action = `/superadmin/news/${newsId}/delete`;
+      });
+    }
+  });
+</script>
+
+<style>
+  .news-thumbnail {
+    width: 60px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 4px;
+  }
+  
+  .news-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .avatar-sm {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 10px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 50%;
+    color: #fff;
+  }
+</style>

@@ -1,0 +1,332 @@
+<!-- File Upload Form -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="fas fa-upload me-2"></i> Upload File Baru</h2>
+  <a href="/superadmin/files" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar File
+  </a>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header bg-white">
+    <h5 class="mb-0">Form Upload File</h5>
+  </div>
+  <div class="card-body">
+    <form action="/superadmin/files/upload" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+      <div class="row">
+        <!-- File Upload -->
+        <div class="col-md-12 mb-4">
+          <div class="file-upload-container">
+            <div class="file-upload-area" id="dropZone">
+              <div class="file-upload-message text-center">
+                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                <h5>Tarik dan Letakkan File di Sini</h5>
+                <p class="text-muted">atau</p>
+                <label for="fileInput" class="btn btn-danger">
+                  <i class="fas fa-folder-open me-1"></i> Pilih File
+                </label>
+                <input type="file" id="fileInput" name="file" class="d-none" required>
+              </div>
+              <div id="filePreview" class="file-preview d-none">
+                <div class="card mb-0">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="file-icon me-3" id="fileTypeIcon">
+                        <i class="fas fa-file fa-2x text-primary"></i>
+                      </div>
+                      <div class="flex-grow-1">
+                        <h5 class="mb-1" id="fileName">filename.ext</h5>
+                        <p class="mb-0 text-muted" id="fileSize">0 KB</p>
+                      </div>
+                      <button type="button" class="btn btn-sm btn-outline-danger" id="removeFile">
+                        <i class="fas fa-times"></i> Hapus
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="invalid-feedback">
+                Silakan pilih file terlebih dahulu.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Details -->
+        <div class="col-md-6 mb-3">
+          <label for="title" class="form-label">Judul File <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="title" name="title" required>
+          <div class="invalid-feedback">
+            Silakan masukkan judul file.
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="category" class="form-label">Kategori <span class="text-danger">*</span></label>
+          <select class="form-select" id="category" name="category" required>
+            <option value="" selected disabled>Pilih Kategori...</option>
+            <% categories.forEach(category => { %>
+              <option value="<%= category %>"><%= category %></option>
+            <% }); %>
+            <option value="other">Lainnya</option>
+          </select>
+          <div class="invalid-feedback">
+            Silakan pilih kategori file.
+          </div>
+        </div>
+
+        <div class="col-md-12 mb-3 d-none" id="otherCategoryGroup">
+          <label for="otherCategory" class="form-label">Kategori Lainnya <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="otherCategory" name="otherCategory">
+          <div class="invalid-feedback">
+            Silakan masukkan kategori lainnya.
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="accessLevel" class="form-label">Level Akses <span class="text-danger">*</span></label>
+          <select class="form-select" id="accessLevel" name="accessLevel" required>
+            <option value="public">Public - Dapat diakses oleh semua orang</option>
+            <option value="user">User - Hanya user yang terdaftar</option>
+            <option value="admin">Admin - Hanya admin</option>
+            <option value="superadmin">Super Admin - Hanya super admin</option>
+          </select>
+          <div class="invalid-feedback">
+            Silakan pilih level akses.
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="tags" class="form-label">Tag (Opsional)</label>
+          <input type="text" class="form-control" id="tags" name="tags" placeholder="Pisahkan dengan koma">
+          <div class="form-text">Contoh: dokumen, penting, rahasia</div>
+        </div>
+
+        <div class="col-md-12 mb-4">
+          <label for="description" class="form-label">Deskripsi (Opsional)</label>
+          <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+        </div>
+
+        <div class="col-md-12 mb-4">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="encrypt" name="encrypt" checked>
+            <label class="form-check-label" for="encrypt">
+              Enkripsi File
+            </label>
+            <div class="form-text text-danger">
+              <i class="fas fa-lock me-1"></i> File akan dienkripsi sebelum disimpan untuk keamanan.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info">
+        <div class="d-flex">
+          <div class="me-3">
+            <i class="fas fa-info-circle fa-2x"></i>
+          </div>
+          <div>
+            <h5 class="alert-heading">Informasi Upload File</h5>
+            <ul class="mb-0">
+              <li>Ukuran maksimal file: 10MB</li>
+              <li>Format file yang diizinkan: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, JPG, JPEG, PNG, ZIP, RAR</li>
+              <li>File yang dienkripsi hanya dapat dibuka melalui platform ini</li>
+              <li>Level akses menentukan siapa yang bisa melihat dan mengunduh file ini</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="d-flex justify-content-between">
+        <button type="reset" class="btn btn-light" id="resetForm">
+          <i class="fas fa-redo me-1"></i> Reset Form
+        </button>
+        <button type="submit" class="btn btn-danger" id="uploadButton">
+          <i class="fas fa-upload me-1"></i> Upload File
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+    const filePreview = document.getElementById('filePreview');
+    const fileMessage = document.querySelector('.file-upload-message');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const fileTypeIcon = document.getElementById('fileTypeIcon');
+    const removeFile = document.getElementById('removeFile');
+    const form = document.querySelector('form');
+    const resetFormBtn = document.getElementById('resetForm');
+    const categorySelect = document.getElementById('category');
+    const otherCategoryGroup = document.getElementById('otherCategoryGroup');
+    const otherCategoryInput = document.getElementById('otherCategory');
+    
+    // Handle file selection
+    fileInput.addEventListener('change', function() {
+      if (fileInput.files.length > 0) {
+        showFilePreview(fileInput.files[0]);
+      }
+    });
+    
+    // Drag and drop functionality
+    dropZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+    
+    dropZone.addEventListener('dragleave', function() {
+      dropZone.classList.remove('drag-over');
+    });
+    
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      
+      if (e.dataTransfer.files.length > 0) {
+        fileInput.files = e.dataTransfer.files;
+        showFilePreview(e.dataTransfer.files[0]);
+      }
+    });
+    
+    // Click on drop zone to select file
+    dropZone.addEventListener('click', function(e) {
+      if (e.target !== removeFile && !removeFile.contains(e.target)) {
+        fileInput.click();
+      }
+    });
+    
+    // Remove selected file
+    removeFile.addEventListener('click', function() {
+      fileInput.value = '';
+      filePreview.classList.add('d-none');
+      fileMessage.classList.remove('d-none');
+      fileInput.setCustomValidity('');
+    });
+    
+    // Reset form
+    resetFormBtn.addEventListener('click', function() {
+      filePreview.classList.add('d-none');
+      fileMessage.classList.remove('d-none');
+      otherCategoryGroup.classList.add('d-none');
+      otherCategoryInput.required = false;
+      
+      setTimeout(() => {
+        form.classList.remove('was-validated');
+      }, 0);
+    });
+    
+    // Other category option
+    categorySelect.addEventListener('change', function() {
+      if (this.value === 'other') {
+        otherCategoryGroup.classList.remove('d-none');
+        otherCategoryInput.required = true;
+      } else {
+        otherCategoryGroup.classList.add('d-none');
+        otherCategoryInput.required = false;
+      }
+    });
+    
+    // Form validation
+    form.addEventListener('submit', function(e) {
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      if (categorySelect.value === 'other' && !otherCategoryInput.value.trim()) {
+        otherCategoryInput.setCustomValidity('Silakan masukkan kategori lainnya');
+        e.preventDefault();
+      } else {
+        otherCategoryInput.setCustomValidity('');
+      }
+      
+      if (fileInput.files.length === 0) {
+        fileInput.setCustomValidity('Silakan pilih file terlebih dahulu');
+        e.preventDefault();
+      } else {
+        fileInput.setCustomValidity('');
+      }
+      
+      form.classList.add('was-validated');
+    });
+    
+    // Helper functions
+    function showFilePreview(file) {
+      fileName.textContent = file.name;
+      fileSize.textContent = formatFileSize(file.size);
+      fileTypeIcon.innerHTML = getFileIcon(file.type, file.name);
+      filePreview.classList.remove('d-none');
+      fileMessage.classList.add('d-none');
+    }
+    
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    function getFileIcon(mimeType, fileName) {
+      let iconClass = 'fa-file';
+      let colorClass = 'text-secondary';
+      
+      if (mimeType.includes('image')) {
+        iconClass = 'fa-file-image';
+        colorClass = 'text-primary';
+      } else if (mimeType.includes('pdf')) {
+        iconClass = 'fa-file-pdf';
+        colorClass = 'text-danger';
+      } else if (mimeType.includes('word') || fileName.endsWith('.doc') || fileName.endsWith('.docx')) {
+        iconClass = 'fa-file-word';
+        colorClass = 'text-primary';
+      } else if (mimeType.includes('excel') || fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
+        iconClass = 'fa-file-excel';
+        colorClass = 'text-success';
+      } else if (mimeType.includes('powerpoint') || fileName.endsWith('.ppt') || fileName.endsWith('.pptx')) {
+        iconClass = 'fa-file-powerpoint';
+        colorClass = 'text-warning';
+      } else if (mimeType.includes('zip') || mimeType.includes('rar') || 
+                 fileName.endsWith('.zip') || fileName.endsWith('.rar')) {
+        iconClass = 'fa-file-archive';
+        colorClass = 'text-warning';
+      } else if (mimeType.includes('text')) {
+        iconClass = 'fa-file-alt';
+        colorClass = 'text-info';
+      }
+      
+      return `<i class="fas ${iconClass} fa-2x ${colorClass}"></i>`;
+    }
+  });
+</script>
+
+<style>
+  .file-upload-container {
+    width: 100%;
+  }
+  
+  .file-upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .file-upload-area:hover, .file-upload-area.drag-over {
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.05);
+  }
+  
+  .file-preview {
+    margin-top: 10px;
+  }
+</style>

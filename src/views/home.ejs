@@ -1,0 +1,154 @@
+<!-- Home Page -->
+<section class="hero-section text-center">
+  <div class="container">
+    <h1>SELAMAT DATANG DI PORTAL PEMERINTAHAN</h1>
+    <p class="lead">Portal resmi untuk informasi pemerintahan dan data terenkrip yang aman.</p>
+    <div class="mt-4">
+      <a href="/news" class="btn btn-light me-2">Lihat Berita</a>
+      <a href="/about" class="btn btn-outline-light">Tentang Portal</a>
+    </div>
+  </div>
+</section>
+
+<!-- Featured News Carousel -->
+<section class="container mt-5">
+  <h2 class="text-center mb-4">BERITA UTAMA</h2>
+  
+  <% if (featuredNews && featuredNews.length > 0) { %>
+    <div id="featuredNewsCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <% featuredNews.forEach((news, index) => { %>
+          <button type="button" data-bs-target="#featuredNewsCarousel" data-bs-slide-to="<%= index %>" 
+            <%= index === 0 ? 'class="active" aria-current="true"' : '' %> aria-label="Slide <%= index + 1 %>"></button>
+        <% }) %>
+      </div>
+      <div class="carousel-inner">
+        <% featuredNews.forEach((news, index) => { %>
+          <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+            <img src="<%= news.coverImage || '/images/news-default.jpg' %>" class="d-block w-100" alt="<%= news.title %>">
+            <div class="carousel-caption d-none d-md-block">
+              <h3><%= news.title %></h3>
+              <p><%= news.summary %></p>
+              <a href="/news/<%= news.slug %>" class="btn btn-danger mt-2">Baca Selengkapnya</a>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#featuredNewsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#featuredNewsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  <% } else { %>
+    <div class="alert alert-info text-center">
+      <i class="fas fa-info-circle me-2"></i> Belum ada berita utama.
+    </div>
+  <% } %>
+</section>
+
+<div class="flag-divider"></div>
+
+<!-- Latest News -->
+<section class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>BERITA TERKINI</h2>
+    <a href="/news" class="btn btn-outline-danger">Lihat Semua</a>
+  </div>
+  
+  <div class="row">
+    <% if (latestNews && latestNews.length > 0) { %>
+      <% latestNews.forEach(news => { %>
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <img src="<%= news.coverImage || '/images/news-default.jpg' %>" class="card-img-top" alt="<%= news.title %>">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="independence-badge"><i class="fas fa-newspaper me-1"></i> <%= news.category %></span>
+                <small class="text-muted"><i class="far fa-calendar-alt me-1"></i> <%= new Date(news.publishDate).toLocaleDateString('id-ID') %></small>
+              </div>
+              <h5 class="card-title"><%= news.title %></h5>
+              <p class="card-text"><%= news.summary %></p>
+            </div>
+            <div class="card-footer bg-white">
+              <a href="/news/<%= news.slug %>" class="btn btn-sm btn-outline-danger w-100">Baca Selengkapnya</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div class="col-12">
+        <div class="alert alert-info text-center">
+          <i class="fas fa-info-circle me-2"></i> Belum ada berita terbaru.
+        </div>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<div class="flag-divider"></div>
+
+<!-- About Portal Section -->
+<section class="container mt-5">
+  <div class="row align-items-center">
+    <div class="col-lg-6">
+      <img src="/images/garuda-pancasila.png" alt="Garuda Pancasila" class="img-fluid mb-4 mb-lg-0">
+    </div>
+    <div class="col-lg-6">
+      <h2>TENTANG PORTAL PEMERINTAHAN</h2>
+      <p class="lead">Portal resmi untuk menyimpan data terenkrip dan informasi pemerintahan.</p>
+      <p>Portal Pemerintahan Indonesia adalah platform resmi yang menyediakan layanan penyimpanan data pribadi terenkrip yang aman serta informasi terkini seputar kebijakan pemerintah Republik Indonesia.</p>
+      <p>Dengan teknologi enkripsi modern, data Anda akan tersimpan dengan aman dan dapat diakses kapanpun sesuai kebutuhan. Portal ini juga menyediakan berita terkini dan terpercaya seputar kebijakan pemerintahan.</p>
+      <a href="/about" class="btn btn-danger">Pelajari Lebih Lanjut</a>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Links -->
+<section class="container mt-5 mb-5">
+  <div class="row">
+    <div class="col-md-3 mb-4">
+      <div class="card text-center h-100">
+        <div class="card-body">
+          <i class="fas fa-newspaper fa-3x text-danger mb-3"></i>
+          <h5 class="card-title">Berita Pemerintahan</h5>
+          <p class="card-text">Informasi terkini seputar kebijakan pemerintah.</p>
+          <a href="/news" class="btn btn-outline-danger mt-2">Lihat Berita</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-4">
+      <div class="card text-center h-100">
+        <div class="card-body">
+          <i class="fas fa-shield-alt fa-3x text-danger mb-3"></i>
+          <h5 class="card-title">Data Terenkrip</h5>
+          <p class="card-text">Penyimpanan data pribadi yang aman dan terenkrip.</p>
+          <a href="/auth/login" class="btn btn-outline-danger mt-2">Akses Data</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-4">
+      <div class="card text-center h-100">
+        <div class="card-body">
+          <i class="fas fa-users fa-3x text-danger mb-3"></i>
+          <h5 class="card-title">Informasi Publik</h5>
+          <p class="card-text">Akses informasi penting untuk masyarakat.</p>
+          <a href="/about" class="btn btn-outline-danger mt-2">Pelajari</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-4">
+      <div class="card text-center h-100">
+        <div class="card-body">
+          <i class="fas fa-phone-alt fa-3x text-danger mb-3"></i>
+          <h5 class="card-title">Hubungi Kami</h5>
+          <p class="card-text">Pertanyaan atau bantuan mengenai portal.</p>
+          <a href="/contact" class="btn btn-outline-danger mt-2">Kontak</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

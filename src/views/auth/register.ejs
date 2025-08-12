@@ -1,0 +1,52 @@
+<h4 class="text-center mb-4">Daftar Akun Baru</h4>
+<form action="/auth/register" method="POST">
+  <div class="mb-3">
+    <label for="username" class="form-label">Username</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-user"></i></span>
+      <input type="text" class="form-control" id="username" name="username" required minlength="3" maxlength="30">
+    </div>
+    <small class="text-muted">Username harus terdiri dari 3-30 karakter</small>
+  </div>
+  
+  <div class="mb-3">
+    <label for="email" class="form-label">Email</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+      <input type="email" class="form-control" id="email" name="email" required>
+    </div>
+  </div>
+  
+  <div class="mb-3">
+    <label for="fullName" class="form-label">Nama Lengkap</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+      <input type="text" class="form-control" id="fullName" name="fullName" required>
+    </div>
+  </div>
+  
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-lock"></i></span>
+      <input type="password" class="form-control" id="password" name="password" required minlength="6">
+    </div>
+    <small class="text-muted">Password minimal 6 karakter</small>
+  </div>
+  
+  <div class="mb-3">
+    <label for="confirmPassword" class="form-label">Konfirmasi Password</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-lock"></i></span>
+      <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required minlength="6">
+    </div>
+  </div>
+  
+  <div class="d-grid gap-2">
+    <button type="submit" class="btn btn-danger">Daftar</button>
+  </div>
+</form>
+
+<div class="text-center mt-3">
+  <p>Sudah punya akun? <a href="/auth/login" class="text-danger">Login di sini</a></p>
+</div>

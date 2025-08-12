@@ -1,0 +1,558 @@
+<!-- Edit News Form -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="fas fa-edit me-2"></i> Edit Berita</h2>
+  <a href="/superadmin/news" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar Berita
+  </a>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header bg-white">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Edit Berita</h5>
+      <span class="badge bg-<%= news.status === 'published' ? 'success' : (news.status === 'draft' ? 'warning' : 'secondary') %>">
+        <%= news.status === 'published' ? 'Diterbitkan' : (news.status === 'draft' ? 'Draft' : 'Diarsipkan') %>
+      </span>
+    </div>
+  </div>
+  <div class="card-body">
+    <form action="/superadmin/news/<%= news.id %>/update" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+      <div class="row">
+        <!-- Title -->
+        <div class="col-md-12 mb-3">
+          <label for="title" class="form-label">Judul Berita <span class="text-danger">*</span></label>
+          <input type="text" class="form-control <%= locals.errors && errors.title ? 'is-invalid' : '' %>" 
+                id="title" name="title" value="<%= locals.formData ? formData.title : news.title %>" required>
+          <% if (locals.errors && errors.title) { %>
+            <div class="invalid-feedback"><%= errors.title.message %></div>
+          <% } %>
+        </div>
+        
+        <!-- Slug -->
+        <div class="col-md-12 mb-3">
+          <label for="slug" class="form-label">Slug</label>
+          <div class="input-group">
+            <span class="input-group-text">/news/</span>
+            <input type="text" class="form-control <%= locals.errors && errors.slug ? 'is-invalid' : '' %>" 
+                  id="slug" name="slug" value="<%= locals.formData ? formData.slug : news.slug %>">
+            <% if (locals.errors && errors.slug) { %>
+              <div class="invalid-feedback"><%= errors.slug.message %></div>
+            <% } %>
+          </div>
+          <div class="form-text">URL unik untuk berita ini.</div>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <!-- Category -->
+          <label for="category" class="form-label">Kategori <span class="text-danger">*</span></label>
+          <select class="form-select <%= locals.errors && errors.category ? 'is-invalid' : '' %>" 
+                 id="category" name="category" required>
+            <% categories.forEach(category => { %>
+              <option value="<%= category %>" <%= (locals.formData ? formData.category === category : news.category === category) ? 'selected' : '' %>><%= category %></option>
+            <% }) %>
+            <option value="other" <%= (locals.formData ? formData.category === 'other' : !categories.includes(news.category)) ? 'selected' : '' %>>Lainnya</option>
+          </select>
+          <% if (locals.errors && errors.category) { %>
+            <div class="invalid-feedback"><%= errors.category.message %></div>
+          <% } %>
+        </div>
+        
+        <!-- Other Category -->
+        <div class="col-md-6 mb-3 <%= (locals.formData ? formData.category === 'other' : !categories.includes(news.category)) ? '' : 'd-none' %>" id="otherCategoryGroup">
+          <label for="otherCategory" class="form-label">Kategori Lainnya <span class="text-danger">*</span></label>
+          <input type="text" class="form-control <%= locals.errors && errors.otherCategory ? 'is-invalid' : '' %>" 
+                id="otherCategory" name="otherCategory" value="<%= locals.formData ? formData.otherCategory : (!categories.includes(news.category) ? news.category : '') %>">
+          <% if (locals.errors && errors.otherCategory) { %>
+            <div class="invalid-feedback"><%= errors.otherCategory.message %></div>
+          <% } %>
+        </div>
+        
+        <!-- Featured Image -->
+        <div class="col-md-12 mb-3">
+          <label for="featuredImage" class="form-label">Gambar Unggulan</label>
+          <input type="file" class="form-control <%= locals.errors && errors.featuredImage ? 'is-invalid' : '' %>" 
+                id="featuredImage" name="featuredImage" accept="image/*">
+          <% if (locals.errors && errors.featuredImage) { %>
+            <div class="invalid-feedback"><%= errors.featuredImage.message %></div>
+          <% } %>
+          <div class="form-text">Format gambar: JPG, JPEG, PNG. Ukuran maksimal: 5MB. Resolusi optimal: 1200x630px.</div>
+          
+          <div class="mt-2 <%= news.featuredImage ? '' : 'd-none' %>" id="imagePreviewContainer">
+            <div class="d-flex align-items-center">
+              <img id="imagePreview" class="img-thumbnail" style="max-height: 200px;" 
+                  src="<%= news.featuredImage ? '/uploads/news/' + news.featuredImage : '' %>" 
+                  alt="Featured Image">
+              
+              <div class="ms-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="removeImage" name="removeImage">
+                  <label class="form-check-label text-danger" for="removeImage">
+                    <i class="fas fa-trash-alt me-1"></i> Hapus gambar ini
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="col-md-12 mb-4">
+          <label for="content" class="form-label">Konten <span class="text-danger">*</span></label>
+          <textarea class="form-control <%= locals.errors && errors.content ? 'is-invalid' : '' %>" 
+                   id="content" name="content" rows="12" required><%= locals.formData ? formData.content : news.content %></textarea>
+          <% if (locals.errors && errors.content) { %>
+            <div class="invalid-feedback"><%= errors.content.message %></div>
+          <% } %>
+        </div>
+        
+        <!-- Summary -->
+        <div class="col-md-12 mb-3">
+          <label for="summary" class="form-label">Ringkasan</label>
+          <textarea class="form-control <%= locals.errors && errors.summary ? 'is-invalid' : '' %>" 
+                   id="summary" name="summary" rows="3"><%= locals.formData ? formData.summary : news.summary %></textarea>
+          <% if (locals.errors && errors.summary) { %>
+            <div class="invalid-feedback"><%= errors.summary.message %></div>
+          <% } else { %>
+            <div class="form-text">Jika dikosongkan, akan otomatis diambil dari paragraf pertama konten.</div>
+          <% } %>
+        </div>
+        
+        <!-- Tags -->
+        <div class="col-md-12 mb-3">
+          <label for="tags" class="form-label">Tags</label>
+          <input type="text" class="form-control <%= locals.errors && errors.tags ? 'is-invalid' : '' %>" 
+                id="tags" name="tags" 
+                value="<%= locals.formData ? formData.tags : (news.tags ? news.tags.join(', ') : '') %>" 
+                placeholder="Pisahkan dengan koma, contoh: politik, ekonomi, pendidikan">
+          <% if (locals.errors && errors.tags) { %>
+            <div class="invalid-feedback"><%= errors.tags.message %></div>
+          <% } %>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <!-- Status -->
+          <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+          <select class="form-select <%= locals.errors && errors.status ? 'is-invalid' : '' %>" 
+                 id="status" name="status" required>
+            <option value="draft" <%= (locals.formData ? formData.status === 'draft' : news.status === 'draft') ? 'selected' : '' %>>Draft</option>
+            <option value="published" <%= (locals.formData ? formData.status === 'published' : news.status === 'published') ? 'selected' : '' %>>Diterbitkan</option>
+            <option value="archived" <%= (locals.formData ? formData.status === 'archived' : news.status === 'archived') ? 'selected' : '' %>>Diarsipkan</option>
+            <option value="scheduled" <%= (locals.formData ? formData.status === 'scheduled' : news.status === 'scheduled') ? 'selected' : '' %>>Jadwalkan Publikasi</option>
+          </select>
+          <% if (locals.errors && errors.status) { %>
+            <div class="invalid-feedback"><%= errors.status.message %></div>
+          <% } %>
+        </div>
+        
+        <!-- Publish Date -->
+        <div class="col-md-6 mb-3 <%= (locals.formData ? formData.status === 'scheduled' : news.status === 'scheduled') ? '' : 'd-none' %>" id="publishDateGroup">
+          <label for="publishDate" class="form-label">Tanggal Publikasi <span class="text-danger">*</span></label>
+          <input type="datetime-local" class="form-control <%= locals.errors && errors.publishDate ? 'is-invalid' : '' %>" 
+                id="publishDate" name="publishDate" 
+                value="<%= locals.formData && formData.publishDate ? new Date(formData.publishDate).toISOString().slice(0, 16) : (news.publishDate ? new Date(news.publishDate).toISOString().slice(0, 16) : '') %>">
+          <% if (locals.errors && errors.publishDate) { %>
+            <div class="invalid-feedback"><%= errors.publishDate.message %></div>
+          <% } %>
+        </div>
+        
+        <!-- Featured -->
+        <div class="col-md-6 mb-3">
+          <div class="form-check form-switch mt-4">
+            <input class="form-check-input" type="checkbox" id="isFeatured" name="isFeatured" 
+                 <%= (locals.formData ? formData.isFeatured : news.isFeatured) ? 'checked' : '' %>>
+            <label class="form-check-label" for="isFeatured">Jadikan Berita Unggulan</label>
+          </div>
+          <div class="form-text">Berita unggulan akan ditampilkan di halaman utama website.</div>
+        </div>
+        
+        <!-- Allow Comments -->
+        <div class="col-md-6 mb-3">
+          <div class="form-check form-switch mt-4">
+            <input class="form-check-input" type="checkbox" id="allowComments" name="allowComments" 
+                 <%= (locals.formData ? formData.allowComments !== false : news.allowComments !== false) ? 'checked' : '' %>>
+            <label class="form-check-label" for="allowComments">Izinkan Komentar</label>
+          </div>
+          <div class="form-text">Pengunjung dapat memberikan komentar pada berita ini.</div>
+        </div>
+        
+        <!-- View Count -->
+        <div class="col-md-12 mb-3">
+          <label for="viewCount" class="form-label">Jumlah Tampilan</label>
+          <input type="number" class="form-control" id="viewCount" name="viewCount" 
+                value="<%= locals.formData ? formData.viewCount : news.viewCount || 0 %>">
+          <div class="form-text">
+            <i class="fas fa-eye me-1"></i> Jumlah pengunjung yang telah melihat berita ini.
+          </div>
+        </div>
+      </div>
+      
+      <hr>
+      
+      <!-- Meta Tags for SEO -->
+      <div class="mb-4">
+        <h5>SEO Metadata</h5>
+        <p class="text-muted">Informasi ini akan membantu optimasi mesin pencari (SEO) untuk berita ini.</p>
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="metaTitle" class="form-label">Meta Title</label>
+            <input type="text" class="form-control" id="metaTitle" name="metaTitle" 
+                  value="<%= locals.formData ? formData.metaTitle : news.metaTitle || '' %>">
+            <div class="form-text">Jika dikosongkan, judul berita akan digunakan.</div>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label for="metaKeywords" class="form-label">Meta Keywords</label>
+            <input type="text" class="form-control" id="metaKeywords" name="metaKeywords" 
+                  value="<%= locals.formData ? formData.metaKeywords : news.metaKeywords || '' %>" placeholder="Pisahkan dengan koma">
+          </div>
+          
+          <div class="col-md-12 mb-3">
+            <label for="metaDescription" class="form-label">Meta Description</label>
+            <textarea class="form-control" id="metaDescription" name="metaDescription" 
+                     rows="2"><%= locals.formData ? formData.metaDescription : news.metaDescription || '' %></textarea>
+            <div class="form-text">
+              Deskripsi singkat untuk hasil pencarian. Jika dikosongkan, ringkasan berita akan digunakan.
+              <span class="text-count"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <hr>
+      
+      <!-- News Info -->
+      <div class="mb-4">
+        <div class="row">
+          <div class="col-md-6">
+            <small class="text-muted">
+              <i class="fas fa-calendar-alt me-1"></i> Dibuat: <%= new Date(news.createdAt).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+              <% if (news.author) { %>
+                oleh <%= news.author.fullName %>
+              <% } %>
+            </small>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <small class="text-muted">
+              <i class="fas fa-edit me-1"></i> Terakhir diupdate: <%= new Date(news.updatedAt).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+            </small>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Submit Button -->
+      <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+          <i class="fas fa-trash-alt me-1"></i> Hapus Berita
+        </button>
+        <div>
+          <a href="/news/<%= news.slug %>" class="btn btn-outline-secondary me-2" target="_blank">
+            <i class="fas fa-eye me-1"></i> Pratinjau
+          </a>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-1"></i> Simpan Perubahan
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Comments Section if available -->
+<% if (comments && comments.length > 0) { %>
+  <div class="card">
+    <div class="card-header bg-white">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-comments me-2"></i> Komentar (<%= comments.length %>)</h5>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="toggleComments" 
+                <%= news.allowComments !== false ? 'checked' : '' %> 
+                onchange="updateCommentStatus(this.checked)">
+          <label class="form-check-label" for="toggleComments">
+            <%= news.allowComments !== false ? 'Komentar Diaktifkan' : 'Komentar Dinonaktifkan' %>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="comment-list">
+        <% comments.forEach(comment => { %>
+          <div class="comment-item mb-3 p-3 border rounded">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex align-items-center">
+                <div class="avatar bg-light text-secondary me-2">
+                  <%= comment.name.substring(0, 2).toUpperCase() %>
+                </div>
+                <div>
+                  <h6 class="mb-0"><%= comment.name %></h6>
+                  <small class="text-muted"><%= comment.email %></small>
+                </div>
+              </div>
+              <div class="text-muted">
+                <small>
+                  <i class="fas fa-calendar-alt me-1"></i> <%= new Date(comment.createdAt).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                </small>
+              </div>
+            </div>
+            <div class="comment-content mt-2">
+              <p><%= comment.content %></p>
+            </div>
+            <div class="comment-actions mt-2 text-end">
+              <% if (!comment.isApproved) { %>
+                <button class="btn btn-sm btn-outline-success me-2" onclick="approveComment('<%= comment.id %>')">
+                  <i class="fas fa-check me-1"></i> Setujui
+                </button>
+              <% } %>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteComment('<%= comment.id %>')">
+                <i class="fas fa-trash-alt me-1"></i> Hapus
+              </button>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Apakah Anda yakin ingin menghapus berita <strong><%= news.title %></strong>?</p>
+        <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i> Aksi ini tidak dapat dibatalkan dan semua komentar pada berita ini juga akan terhapus.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form action="/superadmin/news/<%= news.id %>/delete" method="POST">
+          <button type="submit" class="btn btn-danger">Hapus Berita</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function(event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      
+      form.classList.add('was-validated');
+    });
+    
+    // Category other field toggle
+    const categorySelect = document.getElementById('category');
+    const otherCategoryGroup = document.getElementById('otherCategoryGroup');
+    const otherCategoryInput = document.getElementById('otherCategory');
+    
+    categorySelect.addEventListener('change', function() {
+      if (this.value === 'other') {
+        otherCategoryGroup.classList.remove('d-none');
+        otherCategoryInput.required = true;
+      } else {
+        otherCategoryGroup.classList.add('d-none');
+        otherCategoryInput.required = false;
+      }
+    });
+    
+    // Status field toggle for scheduled publishing
+    const statusSelect = document.getElementById('status');
+    const publishDateGroup = document.getElementById('publishDateGroup');
+    const publishDateInput = document.getElementById('publishDate');
+    
+    statusSelect.addEventListener('change', function() {
+      if (this.value === 'scheduled') {
+        publishDateGroup.classList.remove('d-none');
+        publishDateInput.required = true;
+        
+        // Set default publish date to tomorrow if empty
+        if (!publishDateInput.value) {
+          const tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          tomorrow.setHours(10, 0, 0, 0);
+          publishDateInput.value = tomorrow.toISOString().slice(0, 16);
+        }
+      } else {
+        publishDateGroup.classList.add('d-none');
+        publishDateInput.required = false;
+      }
+    });
+    
+    // Image preview
+    const featuredImage = document.getElementById('featuredImage');
+    const imagePreview = document.getElementById('imagePreview');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const removeImage = document.getElementById('removeImage');
+    
+    featuredImage.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          imagePreview.src = e.target.result;
+          imagePreviewContainer.classList.remove('d-none');
+          removeImage.checked = false;
+        };
+        
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+    
+    removeImage.addEventListener('change', function() {
+      if (this.checked) {
+        featuredImage.value = '';
+      }
+    });
+    
+    // Meta description character count
+    const metaDescription = document.getElementById('metaDescription');
+    const textCount = document.querySelector('.text-count');
+    
+    function updateMetaCount() {
+      const count = metaDescription.value.length;
+      const ideal = count >= 120 && count <= 160;
+      
+      textCount.innerHTML = `<span class="${ideal ? 'text-success' : 'text-warning'}">${count}/160 karakter</span>`;
+    }
+    
+    metaDescription.addEventListener('input', updateMetaCount);
+    
+    // Call once at load
+    updateMetaCount();
+    
+    // Initialize tinymce if available
+    if (typeof tinymce !== 'undefined') {
+      tinymce.init({
+        selector: '#content',
+        height: 400,
+        menubar: true,
+        plugins: [
+          'advlist autolink lists link image charmap print preview anchor',
+          'searchreplace visualblocks code fullscreen',
+          'insertdatetime media table paste code help wordcount'
+        ],
+        toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.6; }',
+        setup: function(editor) {
+          editor.on('change', function() {
+            // Update the hidden textarea
+            tinymce.triggerSave();
+          });
+        }
+      });
+    }
+  });
+  
+  // Comment Management Functions
+  function approveComment(commentId) {
+    if (!commentId) return;
+    
+    fetch(`/superadmin/comments/${commentId}/approve`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Reload page to reflect changes
+        location.reload();
+      } else {
+        alert('Gagal menyetujui komentar: ' + data.message);
+      }
+    })
+    .catch(err => {
+      console.error('Error:', err);
+      alert('Terjadi kesalahan saat menyetujui komentar.');
+    });
+  }
+  
+  function deleteComment(commentId) {
+    if (!commentId) return;
+    
+    if (confirm('Apakah Anda yakin ingin menghapus komentar ini?')) {
+      fetch(`/superadmin/comments/${commentId}/delete`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Reload page to reflect changes
+          location.reload();
+        } else {
+          alert('Gagal menghapus komentar: ' + data.message);
+        }
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        alert('Terjadi kesalahan saat menghapus komentar.');
+      });
+    }
+  }
+  
+  function updateCommentStatus(enabled) {
+    const newsId = '<%= news.id %>';
+    
+    fetch(`/superadmin/news/${newsId}/comments/toggle`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ allowComments: enabled })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        document.querySelector('label[for="toggleComments"]').textContent = 
+          enabled ? 'Komentar Diaktifkan' : 'Komentar Dinonaktifkan';
+      } else {
+        alert('Gagal mengubah status komentar: ' + data.message);
+      }
+    })
+    .catch(err => {
+      console.error('Error:', err);
+      alert('Terjadi kesalahan saat mengubah status komentar.');
+    });
+  }
+</script>
+
+<style>
+  .tox-tinymce {
+    border-radius: 0.25rem;
+  }
+  
+  .form-switch .form-check-input {
+    height: 1.25rem;
+    width: 2.25rem;
+  }
+  
+  .avatar {
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 14px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 50%;
+  }
+  
+  .comment-item {
+    background-color: #f8f9fa;
+  }
+</style>

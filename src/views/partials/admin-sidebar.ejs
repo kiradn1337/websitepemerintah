@@ -1,0 +1,38 @@
+<div class="bg-danger border-right" id="sidebar-wrapper">
+  <div class="sidebar-heading text-white text-center py-4 d-flex align-items-center justify-content-center">
+    <img src="/images/garuda-white.png" alt="Logo" height="40" class="me-2">
+    <div>
+      <h2 class="h5 mb-0">ADMIN PORTAL</h2>
+      <small>Republik Indonesia</small>
+    </div>
+  </div>
+  <div class="list-group list-group-flush">
+    <% if (locals.user && user.role === 'superadmin') { %>
+      <a href="/superadmin" class="list-group-item list-group-item-action <%= locals.activePage === 'dashboard' ? 'active' : '' %>">
+        <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+      </a>
+      <a href="/superadmin/users" class="list-group-item list-group-item-action <%= locals.activePage === 'users' ? 'active' : '' %>">
+        <i class="fas fa-users me-2"></i> Manajemen Pengguna
+      </a>
+      <a href="/superadmin/news" class="list-group-item list-group-item-action <%= locals.activePage === 'news' ? 'active' : '' %>">
+        <i class="fas fa-newspaper me-2"></i> Manajemen Berita
+      </a>
+      <a href="/superadmin/files" class="list-group-item list-group-item-action <%= locals.activePage === 'files' ? 'active' : '' %>">
+        <i class="fas fa-file-alt me-2"></i> Manajemen File
+      </a>
+    <% } else { %>
+      <a href="/admin" class="list-group-item list-group-item-action <%= locals.activePage === 'dashboard' ? 'active' : '' %>">
+        <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+      </a>
+      <a href="/admin/news" class="list-group-item list-group-item-action <%= locals.activePage === 'news' ? 'active' : '' %>">
+        <i class="fas fa-newspaper me-2"></i> Manajemen Berita
+      </a>
+      <a href="/admin/files" class="list-group-item list-group-item-action <%= locals.activePage === 'files' ? 'active' : '' %>">
+        <i class="fas fa-file-alt me-2"></i> Manajemen File
+      </a>
+    <% } %>
+    <a href="/" class="list-group-item list-group-item-action">
+      <i class="fas fa-home me-2"></i> Kembali ke Beranda
+    </a>
+  </div>
+</div>

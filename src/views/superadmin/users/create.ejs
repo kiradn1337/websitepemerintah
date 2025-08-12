@@ -1,0 +1,167 @@
+<!-- Create User Form -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="fas fa-user-plus me-2"></i> Tambah Pengguna Baru</h2>
+  <a href="/superadmin/users" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar Pengguna
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header bg-white">
+    <h5 class="mb-0">Form Pengguna Baru</h5>
+  </div>
+  <div class="card-body">
+    <form action="/superadmin/users" method="POST" novalidate class="needs-validation">
+      <!-- Full Name -->
+      <div class="mb-3">
+        <label for="fullName" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+        <input type="text" class="form-control <%= locals.errors && errors.fullName ? 'is-invalid' : '' %>" 
+              id="fullName" name="fullName" value="<%= locals.formData ? formData.fullName : '' %>" required>
+        <% if (locals.errors && errors.fullName) { %>
+          <div class="invalid-feedback"><%= errors.fullName.message %></div>
+        <% } %>
+      </div>
+      
+      <!-- Email -->
+      <div class="mb-3">
+        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+        <input type="email" class="form-control <%= locals.errors && errors.email ? 'is-invalid' : '' %>" 
+              id="email" name="email" value="<%= locals.formData ? formData.email : '' %>" required>
+        <% if (locals.errors && errors.email) { %>
+          <div class="invalid-feedback"><%= errors.email.message %></div>
+        <% } else { %>
+          <div class="form-text">Email ini akan digunakan untuk login dan komunikasi.</div>
+        <% } %>
+      </div>
+      
+      <div class="row">
+        <!-- Password -->
+        <div class="col-md-6 mb-3">
+          <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <input type="password" class="form-control <%= locals.errors && errors.password ? 'is-invalid' : '' %>" 
+                  id="password" name="password" required>
+            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password">
+              <i class="fas fa-eye"></i>
+            </button>
+            <% if (locals.errors && errors.password) { %>
+              <div class="invalid-feedback"><%= errors.password.message %></div>
+            <% } %>
+          </div>
+          <div class="form-text">Minimal 8 karakter, dengan huruf besar, huruf kecil, dan angka.</div>
+        </div>
+        
+        <!-- Confirm Password -->
+        <div class="col-md-6 mb-3">
+          <label for="confirmPassword" class="form-label">Konfirmasi Password <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <input type="password" class="form-control <%= locals.errors && errors.confirmPassword ? 'is-invalid' : '' %>" 
+                  id="confirmPassword" name="confirmPassword" required>
+            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="confirmPassword">
+              <i class="fas fa-eye"></i>
+            </button>
+            <% if (locals.errors && errors.confirmPassword) { %>
+              <div class="invalid-feedback"><%= errors.confirmPassword.message %></div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Role -->
+        <div class="col-md-6 mb-3">
+          <label for="role" class="form-label">Peran <span class="text-danger">*</span></label>
+          <select class="form-select <%= locals.errors && errors.role ? 'is-invalid' : '' %>" 
+                 id="role" name="role" required>
+            <option value="" disabled <%= !locals.formData || !formData.role ? 'selected' : '' %>>Pilih Peran...</option>
+            <option value="user" <%= locals.formData && formData.role === 'user' ? 'selected' : '' %>>User</option>
+            <option value="admin" <%= locals.formData && formData.role === 'admin' ? 'selected' : '' %>>Admin</option>
+            <option value="superadmin" <%= locals.formData && formData.role === 'superadmin' ? 'selected' : '' %>>Super Admin</option>
+          </select>
+          <% if (locals.errors && errors.role) { %>
+            <div class="invalid-feedback"><%= errors.role.message %></div>
+          <% } else { %>
+            <div class="form-text">
+              <span class="text-danger">Perhatian:</span> Peran Super Admin memiliki akses penuh ke semua fitur sistem.
+            </div>
+          <% } %>
+        </div>
+        
+        <!-- Active Status -->
+        <div class="col-md-6 mb-3">
+          <label for="isActive" class="form-label">Status</label>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="isActive" name="isActive" 
+                  <%= !locals.formData || formData.isActive !== false ? 'checked' : '' %>>
+            <label class="form-check-label" for="isActive">Aktif</label>
+          </div>
+          <div class="form-text">Pengguna tidak aktif tidak dapat login ke sistem.</div>
+        </div>
+      </div>
+
+      <!-- Additional Information -->
+      <div class="mb-4">
+        <label for="notes" class="form-label">Catatan (Opsional)</label>
+        <textarea class="form-control" id="notes" name="notes" rows="2"><%= locals.formData ? formData.notes : '' %></textarea>
+        <div class="form-text">Informasi tambahan atau catatan tentang pengguna ini.</div>
+      </div>
+
+      <hr>
+      
+      <!-- Submit Button -->
+      <div class="d-flex justify-content-between">
+        <button type="reset" class="btn btn-light">
+          <i class="fas fa-redo me-1"></i> Reset Form
+        </button>
+        <button type="submit" class="btn btn-danger">
+          <i class="fas fa-user-plus me-1"></i> Buat Pengguna
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Password toggle visibility
+    const toggleButtons = document.querySelectorAll('.toggle-password');
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const targetId = this.getAttribute('data-target');
+        const passwordInput = document.getElementById(targetId);
+        
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          this.querySelector('i').classList.remove('fa-eye');
+          this.querySelector('i').classList.add('fa-eye-slash');
+        } else {
+          passwordInput.type = 'password';
+          this.querySelector('i').classList.remove('fa-eye-slash');
+          this.querySelector('i').classList.add('fa-eye');
+        }
+      });
+    });
+    
+    // Form validation
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', function(event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      
+      const password = document.getElementById('password');
+      const confirmPassword = document.getElementById('confirmPassword');
+      
+      if (password.value !== confirmPassword.value) {
+        confirmPassword.setCustomValidity('Passwords do not match');
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        confirmPassword.setCustomValidity('');
+      }
+      
+      form.classList.add('was-validated');
+    });
+  });
+</script>

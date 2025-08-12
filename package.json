@@ -1,0 +1,45 @@
+{
+  "name": "websitepemerintah",
+  "version": "1.0.0",
+  "description": "Website Pemerintah dengan Enkripsi Data",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo \"No build step required\""
+  },
+  "keywords": [
+    "pemerintah",
+    "indonesia",
+    "enkripsi",
+    "data",
+    "berita"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "crypto-js": "^4.1.1",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.17.3",
+    "express-validator": "^7.0.1",
+    "moment": "^2.29.4",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.33.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "sequelize-cli": "^6.6.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

@@ -1,0 +1,405 @@
+<!-- Personal Data Version View -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="fas fa-history me-2"></i> Versi Data Pribadi</h2>
+  <div>
+    <a href="/superadmin/personal-data/<%= version.dataId %>" class="btn btn-outline-info me-2">
+      <i class="fas fa-eye me-1"></i> Lihat Versi Saat Ini
+    </a>
+    <a href="/superadmin/personal-data" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Version Info -->
+  <div class="col-lg-8">
+    <div class="card mb-4">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="fas fa-file-alt me-2"></i> 
+          Versi <%= version.versionNumber %> dari "<%= version.personalData.title %>"
+        </h5>
+        <span class="badge bg-secondary">Arsip</span>
+      </div>
+      
+      <div class="card-body">
+        <div class="version-info mb-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="avatar avatar-sm me-2 bg-<%= version.creator.role === 'superadmin' ? 'danger' : (version.creator.role === 'admin' ? 'warning' : 'info') %>">
+              <%= version.creator.fullName.substring(0, 2).toUpperCase() %>
+            </div>
+            <div>
+              <span>Disimpan oleh <strong><%= version.creator.fullName %></strong></span>
+              <div class="text-muted small">
+                <i class="fas fa-clock me-1"></i>
+                <%= new Date(version.createdAt).toLocaleDateString('id-ID', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                }) %>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <div class="data-label">Kategori</div>
+              <div class="data-value">
+                <span class="badge bg-light text-dark border"><%= version.personalData.category %></span>
+              </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+              <div class="data-label">Jenis Data</div>
+              <div class="data-value">
+                <% if (version.personalData.dataType === 'text') { %>
+                  <i class="fas fa-align-left text-primary me-1"></i> Teks
+                <% } else if (version.personalData.dataType === 'file') { %>
+                  <i class="fas fa-file text-primary me-1"></i> File
+                <% } %>
+              </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+              <div class="data-label">Status Enkripsi</div>
+              <div class="data-value">
+                <% if (version.personalData.isEncrypted) { %>
+                  <span class="badge bg-danger"><i class="fas fa-lock me-1"></i> Terenkripsi</span>
+                <% } else { %>
+                  <span class="badge bg-success"><i class="fas fa-unlock me-1"></i> Tidak Terenkripsi</span>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Content Section -->
+        <% if (version.personalData.dataType === 'text' && (!version.personalData.isEncrypted || decryptedData)) { %>
+          <div class="content-section">
+            <h5 class="mb-3">Konten (Versi Lama)</h5>
+            <div class="content-box p-3 bg-light rounded">
+              <pre class="mb-0"><%= decryptedData || version.data %></pre>
+            </div>
+          </div>
+        <% } else if (version.personalData.dataType === 'file') { %>
+          <div class="content-section">
+            <h5 class="mb-3">File (Versi Lama)</h5>
+            <div class="file-box p-3 bg-light rounded d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-file fa-2x text-primary me-3"></i>
+                <div>
+                  <h6 class="mb-0"><%= version.fileName || 'File' %></h6>
+                  <small class="text-muted"><%= version.fileSize ? formatFileSize(version.fileSize) : '' %></small>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% } %>
+        
+        <% if (version.personalData.isEncrypted && !decryptedData && version.personalData.dataType === 'text') { %>
+          <div class="alert alert-warning mt-4">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-lock fa-2x me-3"></i>
+              <div>
+                <h5 class="mb-1">Data Terenkripsi</h5>
+                <p class="mb-3">Data ini terenkripsi dan memerlukan kunci untuk membukanya.</p>
+                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#decryptModal">
+                  <i class="fas fa-key me-1"></i> Buka dengan Kunci
+                </button>
+              </div>
+            </div>
+          </div>
+        <% } %>
+        
+        <!-- Comparison Section -->
+        <% if (currentData && currentData.dataType === 'text' && !currentData.isEncrypted && !version.personalData.isEncrypted) { %>
+          <hr class="my-4">
+          <h5 class="mb-3">Perbandingan dengan Versi Saat Ini</h5>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <div class="card h-100">
+                <div class="card-header bg-light">
+                  <h6 class="mb-0">Versi <%= version.versionNumber %> (Lama)</h6>
+                </div>
+                <div class="card-body">
+                  <pre class="mb-0 version-text"><%= version.data %></pre>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card h-100">
+                <div class="card-header bg-light">
+                  <h6 class="mb-0">Versi Saat Ini</h6>
+                </div>
+                <div class="card-body">
+                  <pre class="mb-0 version-text"><%= currentData.data %></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Sidebar -->
+  <div class="col-lg-4">
+    <!-- Version Timeline -->
+    <div class="card mb-4">
+      <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="fas fa-clock me-2"></i> Riwayat Versi</h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="version-timeline">
+          <div class="version-line"></div>
+          
+          <!-- Current version -->
+          <div class="version-item">
+            <div class="version-point bg-primary"></div>
+            <div class="version-content">
+              <div class="version-header">
+                <span class="badge bg-primary">Saat Ini</span>
+                <small class="text-muted ms-2">
+                  <%= new Date(currentData.updatedAt).toLocaleDateString('id-ID', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  }) %>
+                </small>
+              </div>
+              <div class="version-body">
+                <h6><%= currentData.title %></h6>
+                <a href="/superadmin/personal-data/<%= currentData.id %>" class="btn btn-sm btn-outline-primary mt-1">
+                  Lihat Versi Ini
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- This version -->
+          <div class="version-item active">
+            <div class="version-point bg-danger"></div>
+            <div class="version-content">
+              <div class="version-header">
+                <span class="badge bg-danger">Versi <%= version.versionNumber %></span>
+                <small class="text-muted ms-2">
+                  <%= new Date(version.createdAt).toLocaleDateString('id-ID', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  }) %>
+                </small>
+              </div>
+              <div class="version-body">
+                <p class="mb-0 text-muted">Anda sedang melihat versi ini</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Older versions would be listed here -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- Actions -->
+    <div class="card">
+      <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="fas fa-cog me-2"></i> Tindakan</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-grid gap-2">
+          <a href="/superadmin/personal-data/<%= version.dataId %>" class="btn btn-outline-primary">
+            <i class="fas fa-eye me-1"></i> Lihat Versi Saat Ini
+          </a>
+          
+          <% if (version.personalData.isEncrypted && version.personalData.dataType === 'text') { %>
+            <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#decryptModal">
+              <i class="fas fa-unlock-alt me-1"></i> Dekripsi Data
+            </button>
+          <% } %>
+          
+          <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#restoreModal">
+            <i class="fas fa-undo-alt me-1"></i> Pulihkan ke Versi Ini
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Decrypt Modal -->
+<div class="modal fade" id="decryptModal" tabindex="-1" aria-labelledby="decryptModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="decryptModalLabel">Dekripsi Data Versi Lama</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/superadmin/personal-data/version/<%= version.id %>/decrypt" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="decryptionKey" class="form-label">Kunci Dekripsi</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="decryptionKey" name="decryptionKey" required>
+              <button class="btn btn-outline-secondary" type="button" id="toggleDecryptKey">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <div class="form-text">Masukkan kunci dekripsi untuk membuka data versi lama.</div>
+          </div>
+          
+          <% if (locals.decryptError) { %>
+            <div class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i> <%= decryptError %>
+            </div>
+          <% } %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-danger">Dekripsi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Restore Modal -->
+<div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="restoreModalLabel">Pulihkan Versi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Apakah Anda yakin ingin memulihkan data ke versi <%= version.versionNumber %>?</p>
+        <p class="text-muted">Versi saat ini akan disimpan sebagai versi baru sebelum pemulihan.</p>
+        
+        <% if (version.personalData.isEncrypted) { %>
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i> 
+            Data ini terenkripsi. Anda akan memerlukan kunci enkripsi untuk mengaksesnya setelah pemulihan.
+          </div>
+        <% } %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <form action="/superadmin/personal-data/version/<%= version.id %>/restore" method="POST">
+          <button type="submit" class="btn btn-danger">Pulihkan</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Toggle password visibility for decrypt modal
+    const toggleDecryptKey = document.getElementById('toggleDecryptKey');
+    const decryptionKey = document.getElementById('decryptionKey');
+    
+    if (toggleDecryptKey && decryptionKey) {
+      toggleDecryptKey.addEventListener('click', function() {
+        const type = decryptionKey.getAttribute('type') === 'password' ? 'text' : 'password';
+        decryptionKey.setAttribute('type', type);
+        
+        // toggle the icon
+        this.querySelector('i').classList.toggle('fa-eye');
+        this.querySelector('i').classList.toggle('fa-eye-slash');
+      });
+    }
+    
+    // Auto-show decrypt modal if there's an error
+    if (document.getElementById('decryptError')) {
+      new bootstrap.Modal(document.getElementById('decryptModal')).show();
+    }
+  });
+</script>
+
+<style>
+  .avatar {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    border-radius: 50%;
+    display: inline-block;
+    color: #fff;
+    text-align: center;
+    font-weight: 500;
+    font-size: 12px;
+  }
+  
+  .data-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+  }
+  
+  .data-value {
+    font-weight: 500;
+  }
+  
+  .content-box {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+  }
+  
+  .content-box pre, .version-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.875rem;
+  }
+  
+  .file-box {
+    border: 1px solid #dee2e6;
+  }
+  
+  /* Version timeline */
+  .version-timeline {
+    position: relative;
+    padding: 1.5rem 1rem;
+  }
+  
+  .version-line {
+    position: absolute;
+    left: 20px;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background-color: #dee2e6;
+  }
+  
+  .version-item {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 2rem;
+  }
+  
+  .version-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .version-point {
+    position: absolute;
+    left: 15px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+  
+  .version-item.active .version-content {
+    background-color: rgba(220, 53, 69, 0.05);
+    border-left: 3px solid #dc3545;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+  }
+</style>
