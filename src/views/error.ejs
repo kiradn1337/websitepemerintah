@@ -1,0 +1,27 @@
+<%- include('./partials/header') %>
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+          <h3><i class="fas fa-exclamation-triangle me-2"></i> Error</h3>
+        </div>
+        <div class="card-body">
+          <h4><%= message %></h4>
+          <% if (process.env.NODE_ENV !== 'production') { %>
+            <div class="mt-4">
+              <h5>Stack Trace:</h5>
+              <pre class="bg-light p-3 rounded"><%= error.stack %></pre>
+            </div>
+          <% } %>
+          <div class="mt-4">
+            <a href="/" class="btn btn-outline-danger">Kembali ke Halaman Utama</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>

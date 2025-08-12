@@ -1,0 +1,289 @@
+/* Custom CSS untuk tema Merah Putih yang lebih smooth */
+
+:root {
+  --red-indonesia: #CE1126;
+  --white-indonesia: #FFFFFF;
+  --dark-red: #a40e1e;
+  --light-red: #e84c5f;
+  --light-gray: #f5f5f5;
+  --transition-speed: 0.3s;
+}
+
+/* Body dan styling umum */
+body {
+  font-family: 'Poppins', 'Nunito Sans', sans-serif;
+  background-color: var(--light-gray);
+  color: #333;
+}
+
+/* Header dan Navbar */
+.navbar {
+  background: linear-gradient(135deg, var(--red-indonesia), var(--dark-red)) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-speed);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  color: var(--white-indonesia) !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.9) !important;
+  transition: all var(--transition-speed);
+  margin: 0 5px;
+  padding: 8px 15px;
+  border-radius: 5px;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--white-indonesia) !important;
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.navbar-nav .nav-link.active {
+  font-weight: 600;
+  color: var(--white-indonesia) !important;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Buttons */
+.btn-danger {
+  background-color: var(--red-indonesia);
+  border-color: var(--red-indonesia);
+  transition: all var(--transition-speed);
+}
+
+.btn-danger:hover {
+  background-color: var(--dark-red);
+  border-color: var(--dark-red);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(206, 17, 38, 0.3);
+}
+
+.btn-outline-danger {
+  color: var(--red-indonesia);
+  border-color: var(--red-indonesia);
+  transition: all var(--transition-speed);
+}
+
+.btn-outline-danger:hover {
+  background-color: var(--red-indonesia);
+  color: var(--white-indonesia);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(206, 17, 38, 0.3);
+}
+
+/* Cards */
+.card {
+  border: none;
+  border-radius: 10px;
+  transition: all var(--transition-speed);
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  font-weight: 600;
+}
+
+.card .btn {
+  border-radius: 5px;
+}
+
+/* Form Controls */
+.form-control {
+  border-radius: 5px;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  transition: all var(--transition-speed);
+}
+
+.form-control:focus {
+  border-color: var(--red-indonesia);
+  box-shadow: 0 0 0 0.2rem rgba(206, 17, 38, 0.25);
+}
+
+/* Footer */
+footer {
+  background: linear-gradient(135deg, var(--dark-red), var(--red-indonesia));
+  color: var(--white-indonesia);
+  padding: 30px 0;
+}
+
+footer a {
+  color: rgba(255, 255, 255, 0.8);
+  transition: all var(--transition-speed);
+}
+
+footer a:hover {
+  color: var(--white-indonesia);
+  text-decoration: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.main-content {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Tables */
+.table {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.table thead {
+  background-color: var(--red-indonesia);
+  color: white;
+}
+
+/* Pagination */
+.page-item.active .page-link {
+  background-color: var(--red-indonesia);
+  border-color: var(--red-indonesia);
+}
+
+.page-link {
+  color: var(--red-indonesia);
+}
+
+.page-link:hover {
+  color: var(--dark-red);
+}
+
+/* Alerts */
+.alert-danger {
+  background-color: rgba(206, 17, 38, 0.1);
+  border-color: rgba(206, 17, 38, 0.2);
+  color: var(--dark-red);
+}
+
+.alert-success {
+  background-color: rgba(40, 167, 69, 0.1);
+  border-color: rgba(40, 167, 69, 0.2);
+  color: #28a745;
+}
+
+/* Badges */
+.badge-danger {
+  background-color: var(--red-indonesia);
+}
+
+/* Custom class for red-white theme elements */
+.indonesia-theme {
+  background: linear-gradient(135deg, var(--red-indonesia) 0%, var(--white-indonesia) 100%);
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+/* Hero section */
+.hero-section {
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/indonesia-flag.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 100px 0;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.hero-section h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+/* Sections */
+.section-title {
+  position: relative;
+  color: var(--red-indonesia);
+  font-weight: 700;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: var(--red-indonesia);
+}
+
+/* Login/Register Forms */
+.auth-form {
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-form .card-header {
+  background: linear-gradient(135deg, var(--red-indonesia), var(--dark-red));
+  color: white;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-radius: 10px 10px 0 0;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item:hover {
+  background-color: rgba(206, 17, 38, 0.1);
+  color: var(--red-indonesia);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--red-indonesia);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dark-red);
+}
